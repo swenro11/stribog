@@ -1,0 +1,34 @@
+app:
+  name: 'go-tasks'
+  version: '1.1.0'
+
+http:
+  port: '8080'
+
+logger:
+  log_level: 'debug'
+  rollbar_env: 'go-tasks'
+
+postgres:
+  pool_max: 2
+  pg_url: 'postgres://postgres:toor@127.0.0.1:5432/gotasks'
+
+rabbitmq:
+  rpc_server_exchange: 'rpc_server'
+  rpc_client_exchange: 'rpc_client'
+  rpc_url: 'amqp://guest:guest@127.0.0.1:5672/'
+    
+redis:
+  redis_addr: "localhost:6379"
+
+mongo: 
+  mongo_uri: "mongodb://localhost:27017/"
+
+blockchain: 
+  cmc_api_key: "ZZZZZZZZZZZZZZZZZZZZZFGGGGGZZZZZzzzzzz"
+
+param:  
+  disable_swagger_http_handler: true
+  gin_mode: debug
+  tg_bot_api: "5856567965ZZZZZZZZZZZZZZZZZZZZzjnU0EjI"
+  tg_chat_id: "-101111111111111111"
