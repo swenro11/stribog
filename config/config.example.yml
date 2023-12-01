@@ -16,13 +16,14 @@ postgres:
 rabbitmq:
   rpc_server_exchange: 'rpc_server'
   rpc_client_exchange: 'rpc_client'
-  rpc_url: 'amqp://guest:guest@127.0.0.1:15679/'
+  rpc_url: 'amqp://guest:guest@127.0.0.1:5679/'
     
 redis:
   redis_addr: "localhost:6379"
 
 mongo: 
   mongo_uri: "mongodb://localhost:27019/"
+  mongo_db: "stribog"
 
 blockchain: 
   cmc_api_key: "ZZZZZZZZZZZZZZZZZZZZZFGGGGGZZZZZzzzzzz"

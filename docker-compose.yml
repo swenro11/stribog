@@ -48,8 +48,8 @@ services:
     container_name: stribog-app
     build: .
     environment:
-      PG_URL: 'postgres://user:postgres@stribog-postgres:5439/stribog'
-      RMQ_URL: 'amqp://guest:guest@stribog-rabbitmq:5679/'
+      PG_URL: 'postgres://stribog:stribog@stribog-postgres:5432/stribog'
+      RMQ_URL: 'amqp://guest:guest@stribog-rabbitmq:5672/'
     ports:
       - 8080:8080
     depends_on:

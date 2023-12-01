@@ -19,7 +19,7 @@ import (
 
 // Run creates objects via constructors.
 func Run(cfg *config.Config) {
-	log := logger.New(context.Background(), cfg.Log.Level, cfg.PARAM.TgBotApi, cfg.PARAM.TgChatId, cfg.Mongo.URI)
+	log := logger.New(context.Background(), cfg.Log.Level, cfg.PARAM.TgBotApi, cfg.PARAM.TgChatId, cfg.Mongo.URI, cfg.Mongo.DB)
 
 	// Repository
 	pg, err := postgres.New(cfg.PG.URL, postgres.MaxPoolSize(cfg.PG.PoolMax))

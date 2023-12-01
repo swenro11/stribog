@@ -30,12 +30,13 @@ type Logger struct {
 	tgtokenapi  string
 	tgchatid    string
 	mongoClient *mongo.Client
+	mongoDB    string
 }
 
 var _ Interface = (*Logger)(nil)
 
 // New -.
-func New(ctx context.Context, level string, tgtoken string, chatid string, mongouri string) *Logger {
+func New(ctx context.Context, level string, tgtoken string, chatid string, mongoUri string, mongoDb string) *Logger {
 	var l zerolog.Level
 
 	switch strings.ToLower(level) {
@@ -56,7 +57,7 @@ func New(ctx context.Context, level string, tgtoken string, chatid string, mongo
 	skipFrameCount := 3
 	logger := zerolog.New(os.Stdout).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).Logger()
 
-	mongoClientOptions := options.Client().ApplyURI(mongouri)
+	mongoClientOptions := options.Client().ApplyURI(mongoUri)
 	client, err := mongo.Connect(ctx, mongoClientOptions)
 	if err != nil {
 		panic(err)
@@ -67,6 +68,7 @@ func New(ctx context.Context, level string, tgtoken string, chatid string, mongo
 		tgtokenapi:  tgtoken,
 		tgchatid:    chatid,
 		mongoClient: client,
+		mongoDB: mongoDb,
 	}
 }
 
@@ -142,7 +144,7 @@ func (l *Logger) Mongo(ctx context.Context, TsUid int64, message string) {
 		panic(errPing)
 	}
 
-	mongoDatabase := l.mongoClient.Database("gotasks")
+	mongoDatabase := l.mongoClient.Database(l.mongoDB)
 	logsCollection := mongoDatabase.Collection("logs")
 	mongoLogsResult, errInsert := logsCollection.InsertOne(ctx, bson.D{
 		{Key: "TS", Value: time.Now().UnixMicro()},

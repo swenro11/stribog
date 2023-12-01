@@ -3,9 +3,15 @@
 ## config
 Create Posgres DB & user, stribog by example.  
 Start RabiitMQ, 
+## Start project docker
+```
+docker-compose up -d
 
+### if u need to rebuild all docker containers
+docker-compose up -d --force-recreate
+```
 
-## Start project
+## Start project local
 First start
 ```
 go mod init github.com/swenro11/stribog
@@ -16,6 +22,7 @@ go mod tidy
 # apply migrations
 go run -tags migrate ./cmd/app 
 # start main task
+go run ./cmd/ap
 ```
 
 ## Project Info
@@ -28,3 +35,7 @@ Add to project -  go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5
 
 MongoDB, manual [Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
 
+## Changelog
+
+### v0.0.1
+empty project with docker

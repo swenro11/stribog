@@ -5,7 +5,7 @@ package app
 import (
 	"errors"
 	"log"
-	//"os"
+	"os"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -25,7 +25,6 @@ func init() {
 		log.Fatalf("migrate: environment variable not declared: PG_URL")
 	}
 	
-
 	//hack, if can't find os.LookupEnv("PG_URL")
 	//databaseURL := "postgres://stribog:stribog@127.0.0.1:5432/stribog"
 	databaseURL += "?sslmode=disable"

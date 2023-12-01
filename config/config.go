@@ -56,6 +56,7 @@ type (
 	// Mongo -.
 	Mongo struct {
 		URI string `env-required:"true" yaml:"mongo_uri" env:"MONGO_URI"`
+		DB string `env-required:"true" yaml:"mongo_db" env:"MONGO_DB"`
 	}
 
 	PARAM struct {

@@ -9,7 +9,7 @@ import (
 	"github.com/jasonlvhit/gocron"
 	"github.com/redis/go-redis/v9"
 	"github.com/swenro11/stribog/config"
-	"github.com/swenro11/stribog/internal/service/repo"
+	//"github.com/swenro11/stribog/internal/service/repo"
 	log "github.com/swenro11/stribog/pkg/logger"
 	"github.com/swenro11/stribog/pkg/postgres"
 	"github.com/swenro11/stribog/pkg/rabbitmq/rmq_rpc/client"
@@ -57,20 +57,7 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config, pg *postgres.Po
 func (service *TasksService) EveryDayTask(cfg *config.Config, pg *postgres.Postgres) {
 	service.log.Info("Start EveryDayTask")
 
-	ctx := context.Background()
-
-	blockchainService := NewBlockchainService(repo.NewTokenInfoRepo(pg), repo.NewCgCoinRepo(pg), service.log, cfg)
-
-	errCgCoinsList := blockchainService.CgCoinsList(ctx)
-	if errCgCoinsList != nil {
-		service.log.Fatal("EveryDayTask - blockchainService.CgCoinsList(): %w", errCgCoinsList)
-	}
-
-	coinCnt, errUpdateTokens := blockchainService.UpdateEthLikeTokens(ctx)
-	if errUpdateTokens != nil {
-		service.log.Fatal("EveryDayTask - blockchainService.UpdateEthLikeTokens err: %w", errUpdateTokens)
-	}
-	service.log.Info("EveryDayTask - All coins cnt = %w", coinCnt)
+	//ctx := context.Background()
 
 	service.log.Info("End EveryDayTask")
 }
