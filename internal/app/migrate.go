@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	_defaultAttempts = 20
+	_defaultAttempts = 10
 	_defaultTimeout  = time.Second
 )
 
@@ -28,7 +28,7 @@ func init() {
 	*/
 
 	//hack, if can't find os.LookupEnv("PG_URL")
-	databaseURL := "postgres://postgres:toor@127.0.0.1:5432/gotasks?sslmode=disable"
+	databaseURL := "postgres://stribog:stribog@127.0.0.1:5432/stribog"
 	//databaseURL += "?sslmode=disable"
 	var (
 		attempts = _defaultAttempts

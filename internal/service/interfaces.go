@@ -48,4 +48,8 @@ type (
 	Tasks interface {
 		CheckRabbitTask() string
 	}
+
+	// PoolRepo -.
+	PoolRepo interface {
+	}
 )

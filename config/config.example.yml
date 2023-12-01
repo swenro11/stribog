@@ -1,5 +1,5 @@
 app:
-  name: 'go-tasks'
+  name: 'stribog'
   version: '1.1.0'
 
 http:
@@ -7,11 +7,11 @@ http:
 
 logger:
   log_level: 'debug'
-  rollbar_env: 'go-tasks'
+  rollbar_env: 'stribog'
 
 postgres:
   pool_max: 2
-  pg_url: 'postgres://postgres:toor@127.0.0.1:5432/gotasks'
+  pg_url: 'postgres://stribog:stribog@127.0.0.1:5432/stribog'
 
 rabbitmq:
   rpc_server_exchange: 'rpc_server'
