@@ -1,12 +1,21 @@
 
 # Stribog
-s
+## config
+Create Posgres DB & user, stribog by example.  
+Start RabiitMQ, 
+
+
 ## Start project
 First start
 ```
 go mod init github.com/swenro11/stribog
-go mod tidy
-go run -tags migrate ./cmd/app
+#update and install
+go get -u ./... && go mod tidy 
+#just install
+go mod tidy 
+# apply migrations
+go run -tags migrate ./cmd/app 
+# start main task
 ```
 
 ## Project Info

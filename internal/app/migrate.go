@@ -19,17 +19,16 @@ const (
 	_defaultTimeout  = time.Second
 )
 
-func init() {
-	/*
-		databaseURL, ok := os.LookupEnv("PG_URL")
-		if !ok || len(databaseURL) == 0 {
-			log.Fatalf("migrate: environment variable not declared: PG_URL")
-		}
-	*/
+func init() {	
+	databaseURL, ok := os.LookupEnv("PG_URL")
+	if !ok || len(databaseURL) == 0 {
+		log.Fatalf("migrate: environment variable not declared: PG_URL")
+	}
+	
 
 	//hack, if can't find os.LookupEnv("PG_URL")
-	databaseURL := "postgres://stribog:stribog@127.0.0.1:5432/stribog"
-	//databaseURL += "?sslmode=disable"
+	//databaseURL := "postgres://stribog:stribog@127.0.0.1:5432/stribog"
+	databaseURL += "?sslmode=disable"
 	var (
 		attempts = _defaultAttempts
 		err      error

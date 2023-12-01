@@ -1,6 +1,6 @@
 app:
   name: 'stribog'
-  version: '1.1.0'
+  version: '1.0.1'
 
 http:
   port: '8080'
@@ -11,18 +11,18 @@ logger:
 
 postgres:
   pool_max: 2
-  pg_url: 'postgres://stribog:stribog@127.0.0.1:5432/stribog'
+  pg_url: 'postgres://stribog:stribog@127.0.0.1:5439/stribog'
 
 rabbitmq:
   rpc_server_exchange: 'rpc_server'
   rpc_client_exchange: 'rpc_client'
-  rpc_url: 'amqp://guest:guest@127.0.0.1:5672/'
+  rpc_url: 'amqp://guest:guest@127.0.0.1:15679/'
     
 redis:
   redis_addr: "localhost:6379"
 
 mongo: 
-  mongo_uri: "mongodb://localhost:27017/"
+  mongo_uri: "mongodb://localhost:27019/"
 
 blockchain: 
   cmc_api_key: "ZZZZZZZZZZZZZZZZZZZZZFGGGGGZZZZZzzzzzz"
