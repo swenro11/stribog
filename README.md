@@ -1,19 +1,18 @@
 
 # Stribog
-## config
-Create Posgres DB & user, stribog by example.  
-Start RabiitMQ, 
-## Start project docker
+## Start project in docker
 ```
 docker-compose up -d
-
 ### if u need to rebuild all docker containers
 docker-compose up -d --force-recreate
 ```
+Output u can see in Docker Dashboard
 
 ## Start project local
+But with enviroment in docker containers. 
 First start
 ```
+docker-compose up -d
 go mod init github.com/swenro11/stribog
 #update and install
 go get -u ./... && go mod tidy 
@@ -22,7 +21,7 @@ go mod tidy
 # apply migrations
 go run -tags migrate ./cmd/app 
 # start main task
-go run ./cmd/ap
+go run ./cmd/app
 ```
 
 ## Project Info
@@ -31,11 +30,11 @@ Sheduller Based on [jasonlvhit/gocron](https://github.com/jasonlvhit/gocron)
 Add to project - go get github.com/jasonlvhit/gocron  
 
 Telegram API [Go Telegram Bot API](https://go-telegram-bot-api.dev/)  
-Add to project -  go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5  
+Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5  
 
-MongoDB, manual [Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
+## Roadmap
+v0.2.0 Keyword Research Tool
 
 ## Changelog
-
-### v0.0.1
-empty project with docker
+v0.1.0 - LinGoose. Huggingface Service
+v0.0.1 - Start in docker & local

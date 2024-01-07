@@ -9,6 +9,7 @@ import (
 	"github.com/jasonlvhit/gocron"
 	"github.com/redis/go-redis/v9"
 	"github.com/swenro11/stribog/config"
+
 	//"github.com/swenro11/stribog/internal/service/repo"
 	log "github.com/swenro11/stribog/pkg/logger"
 	"github.com/swenro11/stribog/pkg/postgres"
@@ -34,8 +35,9 @@ func (service *TasksService) StartTasks(cfg *config.Config, pg *postgres.Postgre
 
 	gocron.Clear()
 
-	gocron.Every(1).Minute().From(gocron.NextTick()).Do(service.EveryMinuteTask, cfg, pg)
-	gocron.Every(24).Hours().From(gocron.NextTick()).Do(service.EveryDayTask, cfg, pg)
+	//gocron.Every(1).Minute().From(gocron.NextTick()).Do(service.EveryMinuteTask, cfg, pg)
+	gocron.Every(10).Minute().From(gocron.NextTick()).Do(service.EveryTenMinuteTask, cfg, pg)
+	//gocron.Every(24).Hours().From(gocron.NextTick()).Do(service.EveryDayTask, cfg, pg)
 
 	<-gocron.Start()
 }
@@ -51,6 +53,28 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config, pg *postgres.Po
 
 	msg = fmt.Sprintf("End EveryMinuteTasks, check difference between TsUid, time = %s", time.Now())
 	service.log.Mongo(ctx, tmsp, msg)
+	service.log.Info("End everyMinuteTasks")
+}
+
+func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres.Postgres) {
+	service.log.Info("Start EveryTenMinuteTask")
+
+	huggingfaceService := NewHuggingfaceService(
+		cfg,
+		service.log,
+	)
+	huggingfaceToken := huggingfaceService.checkGetenv(false)
+	if len(huggingfaceToken) > 0 {
+		ctx := context.Background()
+		result, errTextGeneration := huggingfaceService.TextGeneration(false, ctx, "gpt2", "What is the NATO purpose?")
+		if errTextGeneration != nil {
+			service.log.Fatal(errTextGeneration)
+		}
+		service.log.Info("Result - ", result)
+	} else {
+		service.log.Info("Not found HuggingfaceToken")
+	}
+
 	service.log.Info("End everyMinuteTasks")
 }
 

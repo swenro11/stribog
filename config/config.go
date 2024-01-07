@@ -9,14 +9,14 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App        `yaml:"app"`
-		HTTP       `yaml:"http"`
-		Log        `yaml:"logger"`
-		PG         `yaml:"postgres"`
-		RMQ        `yaml:"rabbitmq"`
-		Redis      `yaml:"redis"`
-		Mongo      `yaml:"mongo"`
-		PARAM      `yaml:"param"`
+		App   `yaml:"app"`
+		HTTP  `yaml:"http"`
+		Log   `yaml:"logger"`
+		PG    `yaml:"postgres"`
+		RMQ   `yaml:"rabbitmq"`
+		Redis `yaml:"redis"`
+		Mongo `yaml:"mongo"`
+		PARAM `yaml:"param"`
 	}
 
 	// App -.
@@ -56,7 +56,7 @@ type (
 	// Mongo -.
 	Mongo struct {
 		URI string `env-required:"true" yaml:"mongo_uri" env:"MONGO_URI"`
-		DB string `env-required:"true" yaml:"mongo_db" env:"MONGO_DB"`
+		DB  string `env-required:"true" yaml:"mongo_db" env:"MONGO_DB"`
 	}
 
 	PARAM struct {
@@ -64,6 +64,7 @@ type (
 		GinMode                   string `env-required:"true" yaml:"gin_mode" env:"GIN_MODE"`
 		TgBotApi                  string `env-required:"false" yaml:"tg_bot_api" env:"TG_BOT_API"`
 		TgChatId                  string `env-required:"false" yaml:"tg_chat_id" env:"TG_CHAT_ID"`
+		HuggingfaceToken          string `env-required:"false" yaml:"huggingface_token" env:"HUGGINGFACE_TOKEN"`
 	}
 )
 
