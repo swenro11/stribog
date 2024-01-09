@@ -65,6 +65,7 @@ type (
 		TgBotApi                  string `env-required:"false" yaml:"tg_bot_api" env:"TG_BOT_API"`
 		TgChatId                  string `env-required:"false" yaml:"tg_chat_id" env:"TG_CHAT_ID"`
 		HuggingfaceToken          string `env-required:"false" yaml:"huggingface_token" env:"HUGGINGFACE_TOKEN"`
+		CohereToken               string `env-required:"false" yaml:"cohere_token" env:"COHERE_TOKEN"`
 	}
 )
 

@@ -59,21 +59,41 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config, pg *postgres.Po
 func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres.Postgres) {
 	service.log.Info("Start EveryTenMinuteTask")
 
+	/*
+		cohereService := NewCohereService(
+			cfg,
+			service.log,
+		)
+
+		result, errTextGeneration := cohereService.TextGeneration("What is the NATO purpose?")
+		if errTextGeneration != nil {
+			service.log.Fatal(errTextGeneration)
+		}
+	*/
+
+	/*
+		huggingfaceService := NewHuggingfaceService(
+			cfg,
+			service.log,
+		)
+
+		result, errHermesTextGen := huggingfaceService.HermesTextGen("What is the NATO purpose?")
+		if errHermesTextGen != nil {
+			service.log.Fatal(errHermesTextGen)
+		}
+	*/
+
 	huggingfaceService := NewHuggingfaceService(
 		cfg,
 		service.log,
 	)
-	huggingfaceToken := huggingfaceService.checkGetenv(false)
-	if len(huggingfaceToken) > 0 {
-		ctx := context.Background()
-		result, errTextGeneration := huggingfaceService.TextGeneration(false, ctx, "gpt2", "What is the NATO purpose?")
-		if errTextGeneration != nil {
-			service.log.Fatal(errTextGeneration)
-		}
-		service.log.Info("Result - ", result)
-	} else {
-		service.log.Info("Not found HuggingfaceToken")
+
+	result, errTextGeneration := huggingfaceService.HermesTextGenHupe1980("What is the NATO purpose?")
+	if errTextGeneration != nil {
+		service.log.Fatal(errTextGeneration)
 	}
+
+	service.log.Info("Result - ", result)
 
 	service.log.Info("End everyMinuteTasks")
 }
