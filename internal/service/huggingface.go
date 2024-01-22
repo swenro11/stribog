@@ -13,25 +13,28 @@ import (
 
 const (
 	_HuggingfaceTokenParam = "HUGGING_FACE_HUB_TOKEN"
-	_HuggingfaceModelgpt2  = "gpt2"
+	//https://huggingface.co/{model_name}
+	_HuggingfaceModelgpt2 = "gpt2"
 
-	_HuggingfaceMode3blMicrosoftPhi2 = "microsoft/phi-2"
-	/*
-		_HuggingfaceMode3blMicrosoftPhi2 - error
-		The repository for microsoft/phi-2 contains custom code which must be executed to correctly load the model.
-		You can inspect the repository content at https://hf.co/microsoft/phi-2.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.
+	/* microsoft/phi-2
+	The repository for microsoft/phi-2 contains custom code which must be executed to correctly load the model.
+	You can inspect the repository content at https://hf.co/microsoft/phi-2.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.
 	*/
-	_HuggingfaceModel2x34bHermes2 = "Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B" //https://huggingface.co/Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B
+
 	/*
-		_HuggingfaceMode3blMicrosoftPhi2 - error
+		The model TomGrc/FusionNet_7Bx2_MoE_14B is too large to be loaded automatically (25GB > 10GB).
+		Please use Spaces (https://huggingface.co/spaces) or Inference Endpoints (https://huggingface.co/inference-endpoints)."}
+	*/
+	_HuggingfaceModel7Bx2FusionNet = "TomGrc/FusionNet_7Bx2_MoE_14B"
+	/*
 		The model Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B is too large to be loaded automatically (121GB > 10GB).
 		Please use Spaces (https://huggingface.co/spaces) or Inference Endpoints (https://huggingface.co/inference-endpoints).
 
-		For others model - same error
+		For others model - same error about "is too large to be loaded automatically"
 	*/
-	_HuggingfaceModel67bDeepseek = "deepseek-ai/deepseek-llm-67b-base" //https://huggingface.co/deepseek-ai/deepseek-llm-67b-base
-	_HuggingfaceModel70bCOKAL    = "DopeorNope/COKAL-v1-70B"           //https://huggingface.co/DopeorNope/COKAL-v1-70B
-
+	_HuggingfaceModel2x34bHermes2 = "Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B"
+	_HuggingfaceModel67bDeepseek  = "deepseek-ai/deepseek-llm-67b-base"
+	_HuggingfaceModel70bCOKAL     = "DopeorNope/COKAL-v1-70B"
 )
 
 // HuggingfaceService -.
@@ -78,12 +81,12 @@ func (service *HuggingfaceService) TextGenerationLingoose(model string, promt st
 	return result, nil
 }
 
-func (service *HuggingfaceService) HermesTextGenLingoose(promt string) (string, error) {
+func (service *HuggingfaceService) FusionNetTextGenLingoose(promt string) (string, error) {
 	huggingfaceToken := service.CheckGetenv(false)
 	if len(huggingfaceToken) > 0 {
-		return service.TextGenerationLingoose(_HuggingfaceMode3blMicrosoftPhi2, promt)
+		return service.TextGenerationLingoose(_HuggingfaceModel7Bx2FusionNet, promt)
 	} else {
-		return "", fmt.Errorf("HuggingfaceService.HermesTextGen - Not found HuggingfaceToken")
+		return "", fmt.Errorf("HuggingfaceService.FusionNetTextGenLingoose - Not found HuggingfaceToken")
 	}
 }
 
@@ -100,6 +103,11 @@ func (service *HuggingfaceService) TextGenerationHupe1980(model string, promt st
 	}
 
 	return result[0].GeneratedText, nil
+}
+
+func (service *HuggingfaceService) FusionNetTextGenHupe1980(promt string) (string, error) {
+
+	return service.TextGenerationHupe1980(_HuggingfaceModel7Bx2FusionNet, promt)
 }
 
 func (service *HuggingfaceService) HermesTextGenHupe1980(promt string) (string, error) {

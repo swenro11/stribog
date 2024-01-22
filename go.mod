@@ -21,6 +21,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/rs/zerolog v1.31.0
+	github.com/sashabaranov/go-openai v1.12.0
 	github.com/streadway/amqp v1.1.0
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/files v1.0.1
@@ -59,6 +60,8 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/henomis/cohere-go v1.0.1 // indirect
 	github.com/henomis/restclientgo v1.0.6 // indirect
+	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0 // indirect
+	github.com/invopop/jsonschema v0.7.0 // indirect
 	github.com/itchyny/gojq v0.12.5 // indirect
 	github.com/itchyny/timefmt-go v0.1.3 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -84,6 +87,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect

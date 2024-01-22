@@ -81,14 +81,19 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 		if errHermesTextGen != nil {
 			service.log.Fatal(errHermesTextGen)
 		}
+
+		result, errTextGeneration := huggingfaceService.FusionNetTextGenHupe1980("What is the NATO purpose?")
+		if errTextGeneration != nil {
+			service.log.Fatal(errTextGeneration)
+		}
 	*/
 
-	huggingfaceService := NewHuggingfaceService(
+	localaiService := NewLocalAIService(
 		cfg,
 		service.log,
 	)
 
-	result, errTextGeneration := huggingfaceService.HermesTextGenHupe1980("What is the NATO purpose?")
+	result, errTextGeneration := localaiService.TextGenerationGpt3dot5turbo("What is the NATO purpose?")
 	if errTextGeneration != nil {
 		service.log.Fatal(errTextGeneration)
 	}

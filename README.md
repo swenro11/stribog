@@ -30,15 +30,26 @@ Sheduller Based on [jasonlvhit/gocron](https://github.com/jasonlvhit/gocron)
 Add to project - go get github.com/jasonlvhit/gocron  
 
 Telegram API [Go Telegram Bot API](https://go-telegram-bot-api.dev/)  
-Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5  
+Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5 
+
 ### Online AI
- [Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)
-Use models from huggingface, [LLM leaderboard](https://huggingface.co/collections/open-llm-leaderboard/llm-leaderboard-best-models-652d6c7965a4619fb5c27a03)
+[Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)
+Use models from huggingface, [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard).
+For free account use models < 10GB. 
+
+### LocalAI
+Start docker container with default model.  
+```
+git clone https://github.com/mudler/LocalAI.git 
+cd ~/projects/LocalAI$ 
+docker compose up -d
+```
 
 ## Roadmap
 v0.2.0 Keyword Research Tool
 
 ## Changelog
+v0.1.2 - LocalAIService - LinGoose.
 v0.1.1 - Cohere Service - LinGoose. Huggingface Service - hupe1980/go-huggingface
 v0.1.0 - Huggingface Service - LinGoose. 
 v0.0.1 - Start in docker & local

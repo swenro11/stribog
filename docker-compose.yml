@@ -51,7 +51,7 @@ services:
       PG_URL: 'postgres://stribog:stribog@stribog-postgres:5432/stribog'
       RMQ_URL: 'amqp://guest:guest@stribog-rabbitmq:5672/'
     ports:
-      - 8080:8080
+      - 8089:8080
     depends_on:
       - postgres
       - rabbitmq
