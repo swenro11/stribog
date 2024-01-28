@@ -5,7 +5,11 @@ import (
 	//"fmt"
 
 	"github.com/swenro11/stribog/config"
+	"github.com/swenro11/stribog/internal/entity"
 	log "github.com/swenro11/stribog/pkg/logger"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 const (
@@ -35,4 +39,15 @@ func NewArticleService(cfg *config.Config, l *log.Logger) *ArticleService {
 		cfg: cfg,
 		log: l,
 	}
+}
+
+func (service *ArticleService) CreateArticle(title string) error {
+	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("gorm.Open error: %s", err)
+	}
+
+	db.Create(&entity.Article{Title: title, Status: _StatusNew})
+
+	return nil
 }

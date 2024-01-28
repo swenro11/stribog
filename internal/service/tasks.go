@@ -88,17 +88,28 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 		}
 	*/
 
-	localaiService := NewLocalAIService(
+	/*
+		localaiService := NewLocalAIService(
+			cfg,
+			service.log,
+		)
+
+		result, errTextGeneration := localaiService.TextGenerationGpt3dot5turbo("What is the NATO purpose?")
+		if errTextGeneration != nil {
+			service.log.Fatal(errTextGeneration)
+		}
+
+		service.log.Info("Result - ", result)
+	*/
+
+	articleService := NewArticleService(
 		cfg,
 		service.log,
 	)
-
-	result, errTextGeneration := localaiService.TextGenerationGpt3dot5turbo("What is the NATO purpose?")
-	if errTextGeneration != nil {
-		service.log.Fatal(errTextGeneration)
+	err := articleService.CreateArticle("Test")
+	if err != nil {
+		service.log.Fatal(err)
 	}
-
-	service.log.Info("Result - ", result)
 
 	service.log.Info("End everyMinuteTasks")
 }
