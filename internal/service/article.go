@@ -1,9 +1,6 @@
 package service
 
 import (
-	//"context"
-	//"fmt"
-
 	"github.com/swenro11/stribog/config"
 	"github.com/swenro11/stribog/internal/entity"
 	log "github.com/swenro11/stribog/pkg/logger"
@@ -27,13 +24,11 @@ const (
 	//_StatusGenerateTags        = "GenerateTags"
 )
 
-// ArticleService -.
 type ArticleService struct {
 	cfg *config.Config
 	log *log.Logger
 }
 
-// NewArticleService -.
 func NewArticleService(cfg *config.Config, l *log.Logger) *ArticleService {
 	return &ArticleService{
 		cfg: cfg,
@@ -51,3 +46,11 @@ func (service *ArticleService) CreateArticle(title string) error {
 
 	return nil
 }
+
+/*
+ArticleService. Hugo
+ArticleService. Images
+ArticleService. CheckNotAI - https://www.zerogpt.com/ and https://gptzero.me/ (https://github.com/BurhanUlTayyab/GPTZero)
+ArticleService. CheckUnique - based on https://plagiarismcheck.org/for-developers/#single
+ArticleService. SeoOptimization
+*/

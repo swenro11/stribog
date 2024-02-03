@@ -26,13 +26,11 @@ const (
 	_LocalAIgpt3dot5turbo = "gpt-3.5-turbo"
 )
 
-// LocalAIService -.
 type LocalAIService struct {
 	cfg *config.Config
 	log *log.Logger
 }
 
-// NewLocalAIService -.
 func NewLocalAIService(cfg *config.Config, l *log.Logger) *LocalAIService {
 	return &LocalAIService{
 		cfg: cfg,

@@ -10,19 +10,16 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/swenro11/stribog/config"
 
-	//"github.com/swenro11/stribog/internal/service/repo"
 	log "github.com/swenro11/stribog/pkg/logger"
 	"github.com/swenro11/stribog/pkg/postgres"
 	"github.com/swenro11/stribog/pkg/rabbitmq/rmq_rpc/client"
 )
 
-// TasksService -.
 type TasksService struct {
 	repo PoolRepo
 	log  *log.Logger
 }
 
-// NewTasksService -.
 func NewTasksService(r PoolRepo, l *log.Logger) *TasksService {
 	return &TasksService{
 		repo: r,
@@ -102,11 +99,21 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 		service.log.Info("Result - ", result)
 	*/
 
-	articleService := NewArticleService(
+	/*
+		articleService := NewArticleService(
+			cfg,
+			service.log,
+		)
+		err := articleService.CreateArticle("Test")
+		if err != nil {
+			service.log.Fatal(err)
+		}
+	*/
+	keywordService := NewKeywordService(
 		cfg,
 		service.log,
 	)
-	err := articleService.CreateArticle("Test")
+	err := keywordService.CreateKeyword("Test")
 	if err != nil {
 		service.log.Fatal(err)
 	}

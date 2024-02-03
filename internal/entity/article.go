@@ -10,4 +10,5 @@ type Article struct {
 	RewriteNotes     *string
 	Promt            *string
 	Images           []Image
+	Keyword          []Keyword `gorm:"many2many:article_keywords;"`
 }

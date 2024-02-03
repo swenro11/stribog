@@ -1,6 +1,6 @@
 
 # Stribog
-## Start project in docker
+## Start docker
 ```
 docker-compose up -d
 ### if u need to rebuild all docker containers
@@ -8,9 +8,8 @@ docker-compose up -d --force-recreate
 ```
 Output u can see in Docker Dashboard
 
-## Start project local
+## Start project
 But with enviroment in docker containers. 
-First start
 ```
 docker-compose up -d
 go mod init github.com/swenro11/stribog
@@ -50,14 +49,10 @@ docker compose up -d
 ```
 
 ## Roadmap
-v0.3.2 - ArticleService. Hugo
-v0.3.1 - ArticleService. Images
 v0.3.0 - ImageService
-v0.2.3 - ArticleService. CheckUnique & CheckNotAI
-v0.2.2 - ArticleService. SeoOptimization
-v0.2.1 - ArticleService. Mock Statuses
 
 ## Changelog
+v0.2.1 - KeywordService
 v0.2.0 - ArticleService - Status New. GORM with models - Article & Image. Add generate.go instead of migrate.go
 v0.1.2 - LocalAIService - LinGoose.
 v0.1.1 - Cohere Service - LinGoose. Huggingface Service - hupe1980/go-huggingface

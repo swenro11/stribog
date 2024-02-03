@@ -21,4 +21,6 @@ func init() {
 	log.Print("AutoMigrate: entity.Article")
 	db.AutoMigrate(&entity.Image{})
 	log.Print("AutoMigrate: entity.Image")
+	db.AutoMigrate(&entity.Keyword{})
+	log.Print("AutoMigrate: entity.Keyword")
 }

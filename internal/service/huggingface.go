@@ -37,13 +37,11 @@ const (
 	_HuggingfaceModel70bCOKAL     = "DopeorNope/COKAL-v1-70B"
 )
 
-// HuggingfaceService -.
 type HuggingfaceService struct {
 	cfg *config.Config
 	log *log.Logger
 }
 
-// NewHuggingfaceService -.
 func NewHuggingfaceService(cfg *config.Config, l *log.Logger) *HuggingfaceService {
 	return &HuggingfaceService{
 		cfg: cfg,

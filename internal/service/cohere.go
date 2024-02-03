@@ -9,13 +9,11 @@ import (
 	log "github.com/swenro11/stribog/pkg/logger"
 )
 
-// CohereService -.
 type CohereService struct {
 	cfg *config.Config
 	log *log.Logger
 }
 
-// NewCohereService -.
 func NewCohereService(cfg *config.Config, l *log.Logger) *CohereService {
 	return &CohereService{
 		cfg: cfg,
