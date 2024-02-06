@@ -23,7 +23,7 @@ func NewCohereService(cfg *config.Config, l *log.Logger) *CohereService {
 
 func (service *CohereService) TextGeneration(promt string) (string, error) {
 
-	llm := cohere.NewCompletion().WithAPIKey(service.cfg.PARAM.CohereToken).WithMaxTokens(100).WithTemperature(0.1).WithVerbose(true)
+	llm := cohere.NewCompletion().WithAPIKey(service.cfg.AI.CohereToken).WithMaxTokens(100).WithTemperature(0.1).WithVerbose(true)
 
 	result, errCompletion := llm.Completion(context.Background(), promt)
 	if errCompletion != nil {

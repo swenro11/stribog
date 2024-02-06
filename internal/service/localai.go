@@ -42,7 +42,7 @@ func NewLocalAIService(cfg *config.Config, l *log.Logger) *LocalAIService {
 func (service *LocalAIService) TextGenerationGpt3dot5turbo(promt string) (string, error) {
 
 	customConfig := goopenai.DefaultConfig("")
-	customConfig.BaseURL = service.cfg.PARAM.LocalAIURL
+	customConfig.BaseURL = service.cfg.AI.LocalAIURL
 	customClient := goopenai.NewClientWithConfig(customConfig)
 
 	//openaiModel := new Model

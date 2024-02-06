@@ -49,9 +49,10 @@ docker compose up -d
 ```
 
 ## Roadmap
-v0.3.0 - ImageService
+v0.3.0 - ImageService. 
 
 ## Changelog
+v0.2.2 - Update dependencies, FusionbrainService.CreateTaskString
 v0.2.1 - KeywordService
 v0.2.0 - ArticleService - Status New. GORM with models - Article & Image. Add generate.go instead of migrate.go
 v0.1.2 - LocalAIService - LinGoose.

@@ -58,7 +58,7 @@ func (service *HuggingfaceService) CheckGetenv(enableLog bool) string {
 		return huggingfaceToken
 	}
 
-	os.Setenv(_HuggingfaceTokenParam, service.cfg.PARAM.HuggingfaceToken)
+	os.Setenv(_HuggingfaceTokenParam, service.cfg.AI.HuggingfaceToken)
 	huggingfaceToken = os.Getenv(_HuggingfaceTokenParam)
 	if enableLog {
 		service.log.Info("HuggingfaceService - checkGetenv -  second os.Getenv = " + huggingfaceToken)
@@ -90,7 +90,7 @@ func (service *HuggingfaceService) FusionNetTextGenLingoose(promt string) (strin
 
 func (service *HuggingfaceService) TextGenerationHupe1980(model string, promt string) (string, error) {
 
-	ic := huggingfaceHupe1980.NewInferenceClient(service.cfg.PARAM.HuggingfaceToken)
+	ic := huggingfaceHupe1980.NewInferenceClient(service.cfg.AI.HuggingfaceToken)
 
 	result, errTextGeneration := ic.TextGeneration(context.Background(), &huggingfaceHupe1980.TextGenerationRequest{
 		Inputs: promt,

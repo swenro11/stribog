@@ -4,6 +4,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/jasonlvhit/gocron"
@@ -109,14 +110,34 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 			service.log.Fatal(err)
 		}
 	*/
-	keywordService := NewKeywordService(
+
+	/*
+		keywordService := NewKeywordService(
+			cfg,
+			service.log,
+		)
+		err := keywordService.CreateKeyword("Test")
+		if err != nil {
+			service.log.Fatal(err)
+		}
+	*/
+
+	fusionbrainService := NewFusionbrainService(
 		cfg,
 		service.log,
 	)
-	err := keywordService.CreateKeyword("Test")
-	if err != nil {
-		service.log.Fatal(err)
+
+	result, errGetModels := fusionbrainService.GetModels()
+	if errGetModels != nil {
+		service.log.Fatal(errGetModels)
 	}
+	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type, result.Version)
+
+	taskResult, errCreateTaskString := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "")
+	if errCreateTaskString != nil {
+		service.log.Fatal(errCreateTaskString)
+	}
+	service.log.Info(taskResult.String())
 
 	service.log.Info("End everyMinuteTasks")
 }
