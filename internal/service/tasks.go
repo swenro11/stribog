@@ -133,11 +133,12 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 	}
 	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type, result.Version)
 
-	taskResult, errCreateTaskString := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "")
+	taskResult, errCreateTaskString := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "", true)
 	if errCreateTaskString != nil {
 		service.log.Fatal(errCreateTaskString)
 	}
-	service.log.Info(taskResult.String())
+
+	service.log.Info(taskResult.Uuid)
 
 	service.log.Info("End everyMinuteTasks")
 }

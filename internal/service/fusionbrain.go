@@ -10,11 +10,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/swenro11/stribog/config"
+	"github.com/swenro11/stribog/internal/entity"
 	log "github.com/swenro11/stribog/pkg/logger"
-	"github.com/tidwall/gjson"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 const (
@@ -23,6 +23,7 @@ const (
 	_ModelsAddURL      = "models"
 	_RunAddURL         = "text2image/run"
 	_Kandinsky3ModelId = "4"
+	_emptyUuid         = "00000000-0000-0000-0000-000000000000"
 )
 
 type FusionbrainService struct {
@@ -31,8 +32,8 @@ type FusionbrainService struct {
 }
 
 type ResponseRun struct {
-	uuid   string
-	status string
+	Uuid   string `json:"uuid"`
+	Status string `json:"status"`
 }
 
 type RequestRunModel struct {
@@ -84,8 +85,11 @@ func (service *FusionbrainService) AuthGetRequest(addURL string) (*http.Response
 	return resp, nil
 }
 
-// https://freshman.tech/snippets/go/multipart-upload-google-drive/
-// data must be MultipartFormDataContent (sorry for my C# commentary in Go)
+/*
+Obsolete
+https://freshman.tech/snippets/go/multipart-upload-google-drive/
+data must be MultipartFormDataContent (sorry for my C# commentary in Go)
+*/
 func (service *FusionbrainService) AuthPostRequest(addURL string, data []byte) (*http.Response, error) {
 	client := http.Client{Timeout: time.Duration(3) * time.Second}
 
@@ -142,8 +146,7 @@ func (service *FusionbrainService) GetModels() (*ResponseModels, error) {
 	return models[0], nil
 }
 
-// {\"status\":\"INITIAL\",\"uuid\":\"0a5b8c21-4e59-4ab8-a592-093fc5b0cc77\"}
-func (service *FusionbrainService) CreateTaskString(promt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string) (string, error) {
+func (service *FusionbrainService) CreateTask(promt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string, enableLog bool) (*ResponseRun, error) {
 	client := http.Client{Timeout: time.Duration(3) * time.Second}
 
 	var requestData = RequestRunParams{
@@ -167,164 +170,71 @@ func (service *FusionbrainService) CreateTaskString(promt string, quantity uint,
 
 	paramsWriter, err := writer.CreatePart(paramsPart)
 	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: ", err.Error())
 	}
 
 	paramsPayloadBytes, err := json.Marshal(&requestData)
 	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: ", err.Error())
 	}
 
 	_, err = paramsWriter.Write(paramsPayloadBytes)
 	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
-	}
-
-	err = writer.WriteField("model_id", "4")
-	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
-	}
-
-	err = writer.Close()
-	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
-	}
-
-	request, err := http.NewRequest(http.MethodPost, _BaseURL+_RunAddURL, payload)
-	if err != nil {
-		return "uuid.Nil", errors.WithStack(err)
-	}
-
-	request.Header.Set("Content-Type", writer.FormDataContentType())
-	request.Header.Add("X-Key", "Key "+service.cfg.AI.FusionbrainApi)
-	request.Header.Add("X-Secret", "Secret "+service.cfg.AI.FusionbrainSecret)
-
-	resp, err := client.Do(request)
-	if err != nil {
-		return "", errors.WithStack(err)
-	}
-
-	defer resp.Body.Close()
-
-	respBytes, errReadAll := io.ReadAll(resp.Body)
-	if errReadAll != nil {
-		return "", fmt.Errorf("FusionbrainService.CreateTaskString - ioutil.ReadAll: " + errReadAll.Error())
-	}
-
-	return string(respBytes), nil
-}
-
-// always "00000000-0000-0000-0000-000000000000" in result, need fix this
-func (service *FusionbrainService) CreateTask(promt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string) (uuid.UUID, error) {
-	client := http.Client{Timeout: time.Duration(3) * time.Second}
-
-	var requestData = RequestRunParams{
-		Type:                 "GENERATE",
-		NumImages:            quantity,
-		Height:               height,
-		Width:                width,
-		Style:                style,
-		NegativePromptUnclip: negativePromptUnclip,
-		GenerateParams: struct {
-			Query string "json:\"query\""
-		}{promt},
-	}
-
-	payload := &bytes.Buffer{}
-	writer := multipart.NewWriter(payload)
-
-	paramsPart := make(map[string][]string)
-	paramsPart["Content-Disposition"] = append(paramsPart["Content-Disposition"], "form-data; name=\"params\"")
-	paramsPart["Content-Type"] = append(paramsPart["Content-Type"], "application/json")
-
-	paramsWriter, err := writer.CreatePart(paramsPart)
-	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
-	}
-
-	paramsPayloadBytes, err := json.Marshal(&requestData)
-	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
-	}
-
-	_, err = paramsWriter.Write(paramsPayloadBytes)
-	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: ", err.Error())
 	}
 
 	err = writer.WriteField("model_id", _Kandinsky3ModelId)
 	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: ", err.Error())
 	}
 
 	err = writer.Close()
 	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: ", err.Error())
 	}
 
 	request, err := http.NewRequest(http.MethodPost, _BaseURL+_RunAddURL, payload)
 	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: ", err.Error())
 	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 	request.Header.Add("X-Key", "Key "+service.cfg.AI.FusionbrainApi)
 	request.Header.Add("X-Secret", "Secret "+service.cfg.AI.FusionbrainSecret)
 
-	resp, err := client.Do(request)
+	response, err := client.Do(request)
 	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
-	}
-
-	defer resp.Body.Close()
-
-	respBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return uuid.Nil, errors.WithStack(err)
-	}
-
-	imageId, err := uuid.Parse(gjson.GetBytes(respBytes, "uuid").String())
-
-	return imageId, nil
-}
-
-/*
-func (service *FusionbrainService) CreateTask(promt string, quantity uint, width uint, height uint) (*ResponseRun, error) {
-	var request = RequestRun{
-		ModelID: _Kandinsky3ModelId,
-		Params: RequestRunParams{
-			Type:      "GENERATE",
-			NumImages: quantity,
-			Height:    height,
-			Width:     width,
-			GenerateParams: struct {
-				Query string "json:\"query\""
-			}{promt},
-		}}
-
-	requestBody, errMarshal := json.Marshal(request)
-
-	if errMarshal != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: ", errMarshal.Error())
-	}
-
-	response, errAuthPostRequest := service.AuthPostRequest(_RunAddURL, requestBody)
-
-	if errAuthPostRequest != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - AuthPostRequest: ", errAuthPostRequest.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: ", err.Error())
 	}
 
 	defer response.Body.Close()
 
+	responseBytes, errReadAll := io.ReadAll(response.Body)
+	if errReadAll != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - ioutil.ReadAll: " + errReadAll.Error())
+	}
+
+	if enableLog {
+		service.log.Info("FusionbrainService.CreateTask - string(response) = " + string(responseBytes))
+	}
+
 	var target *ResponseRun
-	errDecode := json.NewDecoder(response.Body).Decode(target)
-	if errDecode != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - Decode: ", errDecode.Error())
+	errUnmarshal := json.Unmarshal(responseBytes, &target)
+	if errUnmarshal != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: ", errUnmarshal.Error())
+	}
+
+	if target.Uuid != _emptyUuid {
+		db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+
+		db.Create(&entity.Task{Uuid: target.Uuid, Status: &target.Status})
 	}
 
 	return target, nil
 }
-*/
 
 /*
 func (service *FusionbrainService) GetStylesAsync()
