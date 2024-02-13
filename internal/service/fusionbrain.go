@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/swenro11/stribog/config"
@@ -18,12 +19,18 @@ import (
 )
 
 const (
-	_BaseURL           = "https://api-key.fusionbrain.ai/key/api/v1/"
-	_StylesURL         = "https://cdn.fusionbrain.ai/static/styles/api"
-	_ModelsAddURL      = "models"
-	_RunAddURL         = "text2image/run"
-	_Kandinsky3ModelId = "4"
-	_emptyUuid         = "00000000-0000-0000-0000-000000000000"
+	_BaseURL              = "https://api-key.fusionbrain.ai/key/api/v1/"
+	_StylesURL            = "https://cdn.fusionbrain.ai/static/styles/api"
+	_ModelsAddURL         = "models"
+	_RunAddURL            = "text2image/run"
+	_GetAddURL            = "text2image/status/"
+	_Kandinsky3ModelId    = "4"
+	_emptyUuid            = "00000000-0000-0000-0000-000000000000"
+	_TaskStatusInitial    = "INITIAL"    // the request has been received, is in the queue for processing
+	_TaskStatusProcessing = "PROCESSING" // the request is being processed
+	_TaskStatusDone       = "DONE"       // task completed
+	_TaskStatusFail       = "FAIL"       // the task could not be completed.
+	_ErrorTaskNotFound    = "404 Not Found"
 )
 
 type FusionbrainService struct {
@@ -34,10 +41,6 @@ type FusionbrainService struct {
 type ResponseRun struct {
 	Uuid   string `json:"uuid"`
 	Status string `json:"status"`
-}
-
-type RequestRunModel struct {
-	ModelID uint `json:"model_id"`
 }
 
 type RequestRunParams struct {
@@ -57,6 +60,23 @@ type ResponseModels struct {
 	Name    string  `json:"name"`
 	Version float64 `json:"version"`
 	Type    string  `json:"type"`
+}
+
+/*
+	{
+	  "uuid": "string",
+	  "status": "string",
+	  "images": ["string"],
+	  "errorDescription": "string",
+	  "censored": "false"
+	}
+*/
+type ResponseStatus struct {
+	Uuid             string   `json:"uuid"`
+	Status           string   `json:"status"`
+	Images           []string `json:"images"`
+	ErrorDescription string   `json:"errorDescription"`
+	Censored         bool     `json:"censored"`
 }
 
 func NewFusionbrainService(cfg *config.Config, l *log.Logger) *FusionbrainService {
@@ -146,6 +166,7 @@ func (service *FusionbrainService) GetModels() (*ResponseModels, error) {
 	return models[0], nil
 }
 
+// TODO: quantity don't work. I send 5 -> get 1 image.
 func (service *FusionbrainService) CreateTask(promt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string, enableLog bool) (*ResponseRun, error) {
 	client := http.Client{Timeout: time.Duration(3) * time.Second}
 
@@ -230,7 +251,66 @@ func (service *FusionbrainService) CreateTask(promt string, quantity uint, width
 			service.log.Fatal("gorm.Open error: %s", err)
 		}
 
-		db.Create(&entity.Task{Uuid: target.Uuid, Status: &target.Status})
+		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Promt: &promt})
+	}
+
+	return target, nil
+}
+
+func (service *FusionbrainService) GetImages(task *entity.Task, enableLog bool) (*ResponseStatus, error) {
+	response, errAuthNewRequest := service.AuthGetRequest(_GetAddURL + task.Uuid)
+
+	if errAuthNewRequest != nil {
+		return nil, fmt.Errorf("FusionbrainService.GetImages - AuthGetRequest: " + errAuthNewRequest.Error())
+	}
+
+	defer response.Body.Close()
+
+	responseBytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.GetImages - io.ReadAll: " + err.Error())
+	}
+
+	stringResult := string(responseBytes)
+	if strings.Contains(stringResult, _ErrorTaskNotFound) {
+		db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+
+		db.Delete(task)
+
+		return nil, fmt.Errorf(gorm.ErrRecordNotFound.Error())
+	}
+
+	if enableLog {
+		service.log.Info("FusionbrainService.GetImages - string(response) = " + string(responseBytes))
+	}
+
+	var target *ResponseStatus
+	errUnmarshal := json.Unmarshal(responseBytes, &target)
+	if errUnmarshal != nil {
+		return nil, fmt.Errorf("FusionbrainService.GetImages - json.Unmarshal: ", errUnmarshal.Error())
+	}
+
+	if target.Uuid != _emptyUuid {
+		db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+		service.log.Info("FusionbrainService.GetImages - Updates, Task.Uuid = " + target.Uuid)
+		db.Model(&task).Updates(entity.Task{Status: target.Status, ErrorDescription: &target.ErrorDescription})
+	}
+
+	if target.Status == _TaskStatusDone {
+		db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+
+		for _, image := range target.Images {
+			db.Create(&entity.Image{Base64: &image, ArticleID: 1, Promt: task.Promt})
+		}
 	}
 
 	return target, nil

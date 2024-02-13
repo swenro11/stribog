@@ -51,9 +51,10 @@ docker compose up -d
 ## Roadmap
 v0.3.1 - ImageService.SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go
 v0.3.0 - ImageService.SaveFileSystem, DeleteFileSystem. Get Images from FusionbrainService
-v0.2.4 - FusionbrainService.CheckGeneration & Image.Base64 (save to DB) 
+
 
 ## Changelog
+v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB) 
 v0.2.3 - FusionbrainService.CreateTask & Task Entity 
 v0.2.2 - FusionbrainService.CreateTaskString, Update dependencies 
 v0.2.1 - KeywordService

@@ -60,7 +60,7 @@ func Run(cfg *config.Config) {
 	*/
 
 	// Tasks
-	tasksService.StartTasks(cfg, pg)
+	tasksService.StartTasks(cfg)
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)

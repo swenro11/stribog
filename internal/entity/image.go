@@ -6,9 +6,9 @@ type Image struct {
 	Slug         *string
 	ArticleID    uint
 	Sort         *uint
-	Status       string
+	Status       *string
 	RewriteNotes *string
-	Promt        string
+	Promt        *string
 	Link         *string
 	Base64       *string
 }

@@ -10,9 +10,12 @@ import (
 	"github.com/jasonlvhit/gocron"
 	"github.com/redis/go-redis/v9"
 	"github.com/swenro11/stribog/config"
+	"github.com/swenro11/stribog/internal/entity"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	log "github.com/swenro11/stribog/pkg/logger"
-	"github.com/swenro11/stribog/pkg/postgres"
+	//"github.com/swenro11/stribog/pkg/postgres"
 	"github.com/swenro11/stribog/pkg/rabbitmq/rmq_rpc/client"
 )
 
@@ -28,19 +31,19 @@ func NewTasksService(r PoolRepo, l *log.Logger) *TasksService {
 	}
 }
 
-func (service *TasksService) StartTasks(cfg *config.Config, pg *postgres.Postgres) {
+func (service *TasksService) StartTasks(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("StartTasks")
 
 	gocron.Clear()
 
 	//gocron.Every(1).Minute().From(gocron.NextTick()).Do(service.EveryMinuteTask, cfg, pg)
-	gocron.Every(10).Minute().From(gocron.NextTick()).Do(service.EveryTenMinuteTask, cfg, pg)
+	gocron.Every(10).Minute().From(gocron.NextTick()).Do(service.EveryTenMinuteTask, cfg)
 	//gocron.Every(24).Hours().From(gocron.NextTick()).Do(service.EveryDayTask, cfg, pg)
 
 	<-gocron.Start()
 }
 
-func (service *TasksService) EveryMinuteTask(cfg *config.Config, pg *postgres.Postgres) {
+func (service *TasksService) EveryMinuteTask(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("Start EveryMinuteTasks")
 
 	ctx := context.Background()
@@ -54,7 +57,7 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config, pg *postgres.Po
 	service.log.Info("End everyMinuteTasks")
 }
 
-func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres.Postgres) {
+func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("Start EveryTenMinuteTask")
 
 	/*
@@ -131,19 +134,37 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config, pg *postgres
 	if errGetModels != nil {
 		service.log.Fatal(errGetModels)
 	}
-	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type, result.Version)
+	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
 
-	taskResult, errCreateTaskString := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "", true)
-	if errCreateTaskString != nil {
-		service.log.Fatal(errCreateTaskString)
+	/*
+		taskResult, errCreateTask := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "", true)
+		if errCreateTask != nil {
+			service.log.Fatal(errCreateTask)
+		}
+
+		service.log.Info("CreateTask taskResult.Uuid: %s", taskResult.Uuid)
+	*/
+
+	db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("gorm.Open error: %s", err)
+	}
+	var task *entity.Task
+	db.Model(&entity.Task{}).First(&task, "status = ?", _TaskStatusInitial)
+
+	service.log.Info("task.Uuid: %s", task.Uuid)
+
+	getImagesResult, errGetImages := fusionbrainService.GetImages(task, false)
+	if errGetImages != nil {
+		service.log.Fatal(errGetImages)
 	}
 
-	service.log.Info(taskResult.Uuid)
+	service.log.Info(getImagesResult.Uuid)
 
 	service.log.Info("End everyMinuteTasks")
 }
 
-func (service *TasksService) EveryDayTask(cfg *config.Config, pg *postgres.Postgres) {
+func (service *TasksService) EveryDayTask(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("Start EveryDayTask")
 
 	//ctx := context.Background()
