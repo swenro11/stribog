@@ -257,6 +257,96 @@ func (service *FusionbrainService) CreateTask(promt string, quantity uint, width
 	return target, nil
 }
 
+func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width uint, height uint, style string, negativePromptUnclip string, enableLog bool) (*ResponseRun, error) {
+	client := http.Client{Timeout: time.Duration(3) * time.Second}
+
+	var requestData = RequestRunParams{
+		Type:                 "GENERATE",
+		NumImages:            1, //!
+		Height:               height,
+		Width:                width,
+		Style:                style,
+		NegativePromptUnclip: negativePromptUnclip,
+		GenerateParams: struct {
+			Query string "json:\"query\""
+		}{*image.Promt}, //!
+	}
+
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+
+	paramsPart := make(map[string][]string)
+	paramsPart["Content-Disposition"] = append(paramsPart["Content-Disposition"], "form-data; name=\"params\"")
+	paramsPart["Content-Type"] = append(paramsPart["Content-Type"], "application/json")
+
+	paramsWriter, err := writer.CreatePart(paramsPart)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: ", err.Error())
+	}
+
+	paramsPayloadBytes, err := json.Marshal(&requestData)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: ", err.Error())
+	}
+
+	_, err = paramsWriter.Write(paramsPayloadBytes)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: ", err.Error())
+	}
+
+	err = writer.WriteField("model_id", _Kandinsky3ModelId)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: ", err.Error())
+	}
+
+	err = writer.Close()
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: ", err.Error())
+	}
+
+	request, err := http.NewRequest(http.MethodPost, _BaseURL+_RunAddURL, payload)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: ", err.Error())
+	}
+
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	request.Header.Add("X-Key", "Key "+service.cfg.AI.FusionbrainApi)
+	request.Header.Add("X-Secret", "Secret "+service.cfg.AI.FusionbrainSecret)
+
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: ", err.Error())
+	}
+
+	defer response.Body.Close()
+
+	responseBytes, errReadAll := io.ReadAll(response.Body)
+	if errReadAll != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - ioutil.ReadAll: " + errReadAll.Error())
+	}
+
+	if enableLog {
+		service.log.Info("FusionbrainService.CreateTask - string(response) = " + string(responseBytes))
+	}
+
+	var target *ResponseRun
+	errUnmarshal := json.Unmarshal(responseBytes, &target)
+	if errUnmarshal != nil {
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: ", errUnmarshal.Error())
+	}
+
+	if target.Uuid != _emptyUuid {
+		db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+
+		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Promt: image.Promt})
+	}
+
+	return target, nil
+}
+
 func (service *FusionbrainService) GetImages(task *entity.Task, enableLog bool) (*ResponseStatus, error) {
 	response, errAuthNewRequest := service.AuthGetRequest(_GetAddURL + task.Uuid)
 

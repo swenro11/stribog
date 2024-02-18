@@ -60,6 +60,97 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config) { //, pg *postg
 func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("Start EveryTenMinuteTask")
 
+	fusionbrainService := NewFusionbrainService(
+		cfg,
+		service.log,
+	)
+
+	result, errGetModels := fusionbrainService.GetModels()
+	if errGetModels != nil {
+		service.log.Fatal(errGetModels)
+	}
+	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
+
+	/*
+
+	 */
+
+	//service.Flow(cfg);
+
+	service.log.Info("End everyMinuteTasks")
+}
+
+func (service *TasksService) EveryDayTask(cfg *config.Config) {
+	service.log.Info("Start EveryDayTask")
+
+	//ctx := context.Background()
+
+	service.log.Info("End EveryDayTask")
+}
+
+func (service *TasksService) Flow(cfg *config.Config) {
+
+	keywordService := NewKeywordService(
+		cfg,
+		service.log,
+	)
+	errCreateKeyword := keywordService.CreateKeyword("Test")
+	if errCreateKeyword != nil {
+		service.log.Fatal(errCreateKeyword.Error())
+	}
+
+	articleService := NewArticleService(
+		cfg,
+		service.log,
+	)
+
+	fusionbrainService := NewFusionbrainService(
+		cfg,
+		service.log,
+	)
+
+	db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("gorm.Open error: %s", err)
+	}
+
+	//create articles for Approved Keywords
+	var keywords []entity.Keyword
+	db.Where(entity.Keyword{Status: _StatusApprove}).Find(&keywords)
+	for _, keyword := range keywords {
+		errCreateArticle := articleService.CreateArticleWithImages(keyword.Title)
+		if errCreateArticle != nil {
+			service.log.Fatal(errCreateArticle.Error())
+		}
+		//create link between article & keyword
+	}
+
+	//fusionbrain online
+	_, errGetModels := fusionbrainService.GetModels()
+	if errGetModels == nil {
+		//start creating images
+		var images []entity.Image
+		db.Where(entity.Image{Status: _StatusNew}).Find(&images)
+		for _, image := range images {
+			_, errCreateTask := fusionbrainService.CreateTaskForImage(image, 1024, 1024, "", "", false)
+			if errCreateTask != nil {
+				service.log.Fatal(errCreateTask)
+			}
+		}
+
+		//get images from fusionbrain
+		var tasks []entity.Task
+		db.Where(entity.Keyword{Status: _TaskStatusInitial}).Find(&tasks)
+		for _, task := range tasks {
+			service.log.Info("task.Uuid: %s", task.Uuid)
+			getImagesResult, errGetImages := fusionbrainService.GetImages(&task, false)
+			if errGetImages != nil {
+				service.log.Fatal(errGetImages)
+			}
+			service.log.Info(getImagesResult.Uuid)
+		}
+
+	}
 	/*
 		cohereService := NewCohereService(
 			cfg,
@@ -104,72 +195,8 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *po
 	*/
 
 	/*
-		articleService := NewArticleService(
-			cfg,
-			service.log,
-		)
-		err := articleService.CreateArticle("Test")
-		if err != nil {
-			service.log.Fatal(err)
-		}
-	*/
 
-	/*
-		keywordService := NewKeywordService(
-			cfg,
-			service.log,
-		)
-		err := keywordService.CreateKeyword("Test")
-		if err != nil {
-			service.log.Fatal(err)
-		}
-	*/
-
-	fusionbrainService := NewFusionbrainService(
-		cfg,
-		service.log,
-	)
-
-	result, errGetModels := fusionbrainService.GetModels()
-	if errGetModels != nil {
-		service.log.Fatal(errGetModels)
-	}
-	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
-
-	/*
-		taskResult, errCreateTask := fusionbrainService.CreateTask("dog fall in to dark hole in cosmos near a planet system with several planets wit circles", 5, 1024, 1024, "", "", true)
-		if errCreateTask != nil {
-			service.log.Fatal(errCreateTask)
-		}
-
-		service.log.Info("CreateTask taskResult.Uuid: %s", taskResult.Uuid)
-	*/
-
-	db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
-	if err != nil {
-		service.log.Fatal("gorm.Open error: %s", err)
-	}
-	var task *entity.Task
-	db.Model(&entity.Task{}).First(&task, "status = ?", _TaskStatusInitial)
-
-	service.log.Info("task.Uuid: %s", task.Uuid)
-
-	getImagesResult, errGetImages := fusionbrainService.GetImages(task, false)
-	if errGetImages != nil {
-		service.log.Fatal(errGetImages)
-	}
-
-	service.log.Info(getImagesResult.Uuid)
-
-	service.log.Info("End everyMinuteTasks")
-}
-
-func (service *TasksService) EveryDayTask(cfg *config.Config) { //, pg *postgres.Postgres
-	service.log.Info("Start EveryDayTask")
-
-	//ctx := context.Background()
-
-	service.log.Info("End EveryDayTask")
+	 */
 }
 
 func (service *TasksService) CheckRabbit(cfg *config.Config, ctx context.Context) {

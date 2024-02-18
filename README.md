@@ -1,25 +1,26 @@
 
 # Stribog
+
 ## Start docker
-```
+```bash
 docker-compose up -d
-### if u need to rebuild all docker containers
+# if u need to rebuild all docker containers
 docker-compose up -d --force-recreate
 ```
 Output u can see in Docker Dashboard
 
-## Start project
-But with enviroment in docker containers. 
-```
+## Init, update and install
+```bash
 docker-compose up -d
 go mod init github.com/swenro11/stribog
-#update and install
 go get -u ./... && go mod tidy 
-#just install
-go mod tidy 
-# apply migrations
-go run -tags migrate ./cmd/app 
-# start main task
+# just install
+go mod tidy
+```
+
+## Start project 
+Localy, with enviroment in docker containers.  
+```bash
 go run ./cmd/app
 ```
 
@@ -34,14 +35,15 @@ Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5
 ## ORM
 [GORM](https://gorm.io/), top [from list](https://github.com/d-tsuji/awesome-go-orms) 
 
+## AI/LLM
+[Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)  
 ### Online AI
-[Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)
-Use models from huggingface, [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard).
-For free account use models < 10GB. 
+- Huggingface, [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard). **Free account allows you to use models < 10GB.**  
+- [Cohere](https://cohere.com/) with LinGoose. 
 
 ### LocalAI
 Start docker container with default model.  
-```
+```bash
 git clone https://github.com/mudler/LocalAI.git 
 cd ~/projects/LocalAI$ 
 # configure default LLM (chat-gpt-3.5-turbo)
@@ -49,17 +51,26 @@ docker compose up -d
 ```
 
 ## Roadmap
-v0.3.1 - ImageService.SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go
-v0.3.0 - ImageService.SaveFileSystem, DeleteFileSystem. Get Images from FusionbrainService
+v1.1.0 - ImageService.SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
+**v1.0.0-BETA** - DeployToProdHugo.  
+v0.9.0 - DeployToTestHugo. WriterService.ConvertToMd. 
+v0.8.0 - CheckNotAI.  
+v0.7.0 - CheckUnique.  
+v0.6.0 - Generating & ReadyWithImages.  
+v0.5.0 - KeywordsService. Get tags/keywords list by short description. Save to DB.  
+V0.4.0 - HugoService.New  
+V0.3.1 - Rename ArticleService to WriterService. Add WriterService.CreateArticleWithImages  
+v0.3.0 - ImageService.SaveFileSystem, DeleteFileSystem. Get Images from FusionbrainService. 
 
 
 ## Changelog
-v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB) 
-v0.2.3 - FusionbrainService.CreateTask & Task Entity 
-v0.2.2 - FusionbrainService.CreateTaskString, Update dependencies 
-v0.2.1 - KeywordService
-v0.2.0 - ArticleService - Status New. GORM with models - Article & Image. Add generate.go instead of migrate.go
-v0.1.2 - LocalAIService - LinGoose.
-v0.1.1 - Cohere Service - LinGoose. Huggingface Service - hupe1980/go-huggingface
-v0.1.0 - Huggingface Service - LinGoose. 
-v0.0.1 - Start in docker & local
+v0.2.5 - mock TasksService.Flow, refactoring, update Readme 
+v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB)   
+v0.2.3 - FusionbrainService.CreateTask & Task Entity  
+v0.2.2 - FusionbrainService.CreateTaskString, Update dependencies  
+v0.2.1 - KeywordService  
+v0.2.0 - ArticleService - Status New. GORM with models - Article & Image. Add generate.go instead of migrate.go  
+v0.1.2 - LocalAIService - LinGoose.  
+v0.1.1 - Cohere Service - LinGoose. Huggingface Service - hupe1980/go-huggingface  
+v0.1.0 - Huggingface Service - LinGoose.  
+v0.0.1 - Start in docker & local  

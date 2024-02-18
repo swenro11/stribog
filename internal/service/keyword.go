@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const ()
+
 type KeywordService struct {
 	cfg *config.Config
 	log *log.Logger
@@ -27,7 +29,7 @@ func (service *KeywordService) CreateKeyword(title string) error {
 		service.log.Fatal("CreateKeyword - gorm.Open: %s", err)
 	}
 
-	db.Create(&entity.Keyword{Title: title})
+	db.Create(&entity.Keyword{Title: title, Status: _StatusNew})
 
 	return nil
 }

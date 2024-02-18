@@ -6,7 +6,7 @@ type Image struct {
 	Slug         *string
 	ArticleID    uint
 	Sort         *uint
-	Status       *string
+	Status       string `gorm:"default:New"`
 	RewriteNotes *string
 	Promt        *string
 	Link         *string

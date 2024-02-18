@@ -18,7 +18,7 @@ const (
 	_defaultTimeout  = time.Second
 )
 
-// OBSOLETE
+// TODO: OBSOLETE, remove all custom pg & migrate libraries. Now we using GORM
 func init() {
 	/*
 		databaseURL, ok := os.LookupEnv("PG_URL")
