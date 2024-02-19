@@ -29,7 +29,7 @@ func (service *KeywordService) CreateKeyword(title string) error {
 		service.log.Fatal("CreateKeyword - gorm.Open: %s", err)
 	}
 
-	db.Create(&entity.Keyword{Title: title, Status: _StatusNew})
+	db.Create(&entity.Keyword{Title: title, Status: StatusNew})
 
 	return nil
 }

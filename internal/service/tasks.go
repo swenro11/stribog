@@ -4,7 +4,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/jasonlvhit/gocron"
@@ -60,21 +59,33 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config) { //, pg *postg
 func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *postgres.Postgres
 	service.log.Info("Start EveryTenMinuteTask")
 
-	fusionbrainService := NewFusionbrainService(
-		cfg,
-		service.log,
-	)
-
-	result, errGetModels := fusionbrainService.GetModels()
-	if errGetModels != nil {
-		service.log.Fatal(errGetModels)
-	}
-	service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
-
 	/*
+		fusionbrainService := NewFusionbrainService(
+			cfg,
+			service.log,
+		)
 
-	 */
+		result, errGetModels := fusionbrainService.GetModels()
+		if errGetModels != nil {
+			service.log.Fatal(errGetModels)
+		}
+		service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
 
+		db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
+		if err != nil {
+			service.log.Fatal("gorm.Open error: %s", err)
+		}
+
+		var images []entity.Image
+		path := "/home/swenro11/Downloads/"
+		db.Where("base64 is not null").Find(&images)
+		for _, image := range images {
+			errSaveImage := fusionbrainService.SaveImageToFileSystem(image, path)
+			if errSaveImage != nil {
+				service.log.Fatal(errSaveImage)
+			}
+		}
+	*/
 	//service.Flow(cfg);
 
 	service.log.Info("End everyMinuteTasks")
@@ -116,7 +127,7 @@ func (service *TasksService) Flow(cfg *config.Config) {
 
 	//create articles for Approved Keywords
 	var keywords []entity.Keyword
-	db.Where(entity.Keyword{Status: _StatusApprove}).Find(&keywords)
+	db.Where(entity.Keyword{Status: StatusApprove}).Find(&keywords)
 	for _, keyword := range keywords {
 		errCreateArticle := articleService.CreateArticleWithImages(keyword.Title)
 		if errCreateArticle != nil {
@@ -130,7 +141,7 @@ func (service *TasksService) Flow(cfg *config.Config) {
 	if errGetModels == nil {
 		//start creating images
 		var images []entity.Image
-		db.Where(entity.Image{Status: _StatusNew}).Find(&images)
+		db.Where(entity.Image{Status: StatusNew}).Find(&images)
 		for _, image := range images {
 			_, errCreateTask := fusionbrainService.CreateTaskForImage(image, 1024, 1024, "", "", false)
 			if errCreateTask != nil {
@@ -140,7 +151,7 @@ func (service *TasksService) Flow(cfg *config.Config) {
 
 		//get images from fusionbrain
 		var tasks []entity.Task
-		db.Where(entity.Keyword{Status: _TaskStatusInitial}).Find(&tasks)
+		db.Where(entity.Keyword{Status: TaskStatusInitial}).Find(&tasks)
 		for _, task := range tasks {
 			service.log.Info("task.Uuid: %s", task.Uuid)
 			getImagesResult, errGetImages := fusionbrainService.GetImages(&task, false)

@@ -10,18 +10,18 @@ import (
 )
 
 const (
-	_StatusNew              string = "New"
-	_StatusApprove          string = "Approve"
-	_StatusGenerating       string = "Generating"      //StartGegenerateImages && SaveImages
-	_StatusReadyWithImages  string = "ReadyWithImages" //SeoOptimization
-	_StatusCheckUnique      string = "CheckUnique"
-	_StatusCheckNotAI       string = "CheckNotAI"
-	_StatusDeployToTestHugo string = "DeployToTestHugo" //MdFormatWithImages
-	_StatusRewrite          string = "Rewrite"
-	_StatusDeployToProdHugo string = "DeployToProdHugo"
-	//_StatusAddLinks            = "AddLinks"
-	//_StatusRegenerateImages    = "RegenerateImages"
-	//_StatusGenerateTags        = "GenerateTags"
+	StatusNew              string = "New"
+	StatusApprove          string = "Approve"
+	StatusGenerating       string = "Generating"      //StartGegenerateImages && SaveImages
+	StatusReadyWithImages  string = "ReadyWithImages" //SeoOptimization
+	StatusCheckUnique      string = "CheckUnique"
+	StatusCheckNotAI       string = "CheckNotAI"
+	StatusDeployToTestHugo string = "DeployToTestHugo" //MdFormatWithImages
+	StatusRewrite          string = "Rewrite"
+	StatusDeployToProdHugo string = "DeployToProdHugo"
+	//StatusAddLinks            = "AddLinks"
+	//StatusRegenerateImages    = "RegenerateImages"
+	//StatusGenerateTags        = "GenerateTags"
 )
 
 type ArticleService struct {
@@ -42,7 +42,7 @@ func (service *ArticleService) CreateArticle(title string) error {
 		service.log.Fatal("gorm.Open error: %s", err)
 	}
 
-	db.Create(&entity.Article{Title: title, Status: _StatusNew})
+	db.Create(&entity.Article{Title: title, Status: StatusNew})
 
 	return nil
 }
@@ -53,9 +53,9 @@ func (service *ArticleService) CreateArticleWithImages(keyword string) error {
 		service.log.Fatal("gorm.Open error: %s", err)
 	}
 
-	db.Create(&entity.Article{Title: keyword, Status: _StatusNew})
+	db.Create(&entity.Article{Title: keyword, Status: StatusNew})
 
-	//create []Image with generaten promts & _StatusNew
+	//create []Image with generaten promts & StatusNew
 
 	return nil
 }

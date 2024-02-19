@@ -37,6 +37,7 @@ Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5
 
 ## AI/LLM
 [Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)  
+
 ### Online AI
 - Huggingface, [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard). **Free account allows you to use models < 10GB.**  
 - [Cohere](https://cohere.com/) with LinGoose. 
@@ -51,7 +52,6 @@ docker compose up -d
 ```
 
 ## Roadmap
-v1.1.0 - ImageService.SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
 **v1.0.0-BETA** - DeployToProdHugo.  
 v0.9.0 - DeployToTestHugo. WriterService.ConvertToMd. 
 v0.8.0 - CheckNotAI.  
@@ -60,10 +60,13 @@ v0.6.0 - Generating & ReadyWithImages.
 v0.5.0 - KeywordsService. Get tags/keywords list by short description. Save to DB.  
 V0.4.0 - HugoService.New  
 V0.3.1 - Rename ArticleService to WriterService. Add WriterService.CreateArticleWithImages  
-v0.3.0 - ImageService.SaveFileSystem, DeleteFileSystem. Get Images from FusionbrainService. 
 
+### Maybe
+SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
+DeleteImageFromFileSystem  
 
 ## Changelog
+v0.3.0 - FusionbrainService.SaveImageToFileSystem
 v0.2.5 - mock TasksService.Flow, refactoring, update Readme 
 v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB)   
 v0.2.3 - FusionbrainService.CreateTask & Task Entity  
