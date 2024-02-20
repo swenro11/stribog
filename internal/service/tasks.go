@@ -69,7 +69,7 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *po
 		if errGetModels != nil {
 			service.log.Fatal(errGetModels)
 		}
-		service.log.Info(strconv.Itoa(result.ID), result.Name, result.Type)
+		service.log.Info(result.Name, result.Type)
 
 		db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
 		if err != nil {
@@ -80,12 +80,26 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *po
 		path := "/home/swenro11/Downloads/"
 		db.Where("base64 is not null").Find(&images)
 		for _, image := range images {
+
+				errGenerateSlug := fusionbrainService.GenerateSlug(image)
+				if errGenerateSlug != nil {
+					service.log.Fatal(errGenerateSlug)
+				}
+
 			errSaveImage := fusionbrainService.SaveImageToFileSystem(image, path)
 			if errSaveImage != nil {
 				service.log.Fatal(errSaveImage)
 			}
 		}
+
+		var img entity.Image
+		db.Model(&img).First(&img, "path is not null")
+		errDeleteImage := fusionbrainService.DeleteImageFromFileSystem(img)
+		if errDeleteImage != nil {
+			service.log.Fatal(errDeleteImage)
+		}
 	*/
+
 	//service.Flow(cfg);
 
 	service.log.Info("End everyMinuteTasks")

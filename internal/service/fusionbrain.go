@@ -8,7 +8,6 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"mime/multipart"
 	"net/http"
@@ -16,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gosimple/slug"
 	"github.com/swenro11/stribog/config"
 	"github.com/swenro11/stribog/internal/entity"
 	log "github.com/swenro11/stribog/pkg/logger"
@@ -146,9 +146,9 @@ func (service *FusionbrainService) GetStringModels() (string, error) {
 
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return "", fmt.Errorf("FusionbrainService.GetStringModels - ioutil.ReadAll: " + err.Error())
+		return "", fmt.Errorf("FusionbrainService.GetStringModels - io.ReadAll: " + err.Error())
 	}
 
 	return string(body), nil
@@ -238,7 +238,7 @@ func (service *FusionbrainService) CreateTask(promt string, quantity uint, width
 
 	responseBytes, errReadAll := io.ReadAll(response.Body)
 	if errReadAll != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - ioutil.ReadAll: " + errReadAll.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: " + errReadAll.Error())
 	}
 
 	if enableLog {
@@ -328,7 +328,7 @@ func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width 
 
 	responseBytes, errReadAll := io.ReadAll(response.Body)
 	if errReadAll != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - ioutil.ReadAll: " + errReadAll.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: " + errReadAll.Error())
 	}
 
 	if enableLog {
@@ -424,7 +424,7 @@ func (service *FusionbrainService) SaveImageToFileSystem(img entity.Image, path 
 		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - jpeg.Decode: ", err.Error())
 	}
 
-	jpgFilename := path + service.RandStringBytes(7) + ".jpg" //image.Slug
+	jpgFilename := path + *img.Slug + ".jpg" //
 	file, err := os.OpenFile(jpgFilename, os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
 		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - os.OpenFile: ", err.Error())
@@ -434,6 +434,13 @@ func (service *FusionbrainService) SaveImageToFileSystem(img entity.Image, path 
 	if err != nil {
 		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - png.Encode: ", err.Error())
 	}
+
+	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("gorm.Open error: %s", err)
+	}
+	db.Model(&img).Updates(entity.Image{Path: &jpgFilename})
+
 	fmt.Println("JPEG file", jpgFilename, "created")
 
 	return nil
@@ -445,6 +452,34 @@ func (service *FusionbrainService) RandStringBytes(n int) string {
 		b[i] = LetterBytes[rand.Intn(len(LetterBytes))]
 	}
 	return string(b)
+}
+
+func (service *FusionbrainService) GenerateSlug(img entity.Image) error {
+	//TODO: check unique for slug
+
+	//slug.MakeLang("Diese & Dass", "de")
+	str := *img.Promt
+	resultSlug := slug.Make(str[0:25]) + service.RandStringBytes(3)
+
+	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		return fmt.Errorf("FusionbrainService.GenerateSlug - gorm.Open: ", err.Error())
+	}
+	db.Model(&img).Updates(entity.Image{Slug: &resultSlug})
+
+	return nil
+}
+
+func (service *FusionbrainService) DeleteImageFromFileSystem(img entity.Image) error {
+	path := *img.Path
+	service.log.Info("FusionbrainService.DeleteImageFromFileSystem - path = " + path)
+
+	err := os.Remove(path)
+	if err != nil {
+		return fmt.Errorf("FusionbrainService.DeleteImageFromFileSystem - os.Remove: ", err.Error())
+	}
+
+	return nil
 }
 
 /*

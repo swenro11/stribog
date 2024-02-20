@@ -53,19 +53,20 @@ docker compose up -d
 
 ## Roadmap
 **v1.0.0-BETA** - DeployToProdHugo.  
-v0.9.0 - DeployToTestHugo. WriterService.ConvertToMd. 
-v0.8.0 - CheckNotAI.  
-v0.7.0 - CheckUnique.  
+v0.9.0 - DeployToTestHugo. 
+v0.8.0 - CheckUnique. 
+v0.7.0 - WriterService.ConvertToMd.  
 v0.6.0 - Generating & ReadyWithImages.  
 v0.5.0 - KeywordsService. Get tags/keywords list by short description. Save to DB.  
 V0.4.0 - HugoService.New  
-V0.3.1 - Rename ArticleService to WriterService. Add WriterService.CreateArticleWithImages  
+V0.3.2 - Rename ArticleService to WriterService. Add WriterService.CreateArticleWithImages  
 
-### Maybe
+### Maybe, later
 SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
-DeleteImageFromFileSystem  
+CheckNotAI
 
 ## Changelog
+V0.3.1 - Add Path field to entity.Image. Add FusionbrainService.GenerateSlug & DeleteImageFromFileSystem. Update project dependencies
 v0.3.0 - FusionbrainService.SaveImageToFileSystem
 v0.2.5 - mock TasksService.Flow, refactoring, update Readme 
 v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB)   

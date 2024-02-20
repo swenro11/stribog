@@ -10,5 +10,6 @@ type Image struct {
 	RewriteNotes *string
 	Promt        *string
 	Link         *string
+	Path         *string
 	Base64       *string
 }
