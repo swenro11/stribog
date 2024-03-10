@@ -56,23 +56,26 @@ docker compose up -d
 v0.9.0 - DeployToTestHugo. 
 v0.8.0 - CheckUnique. 
 v0.7.0 - WriterService.ConvertToMd.  
-v0.6.0 - Generating & ReadyWithImages.  
-v0.5.0 - KeywordsService. Get tags/keywords list by short description. Save to DB.  
-V0.4.0 - HugoService.New  
-V0.3.2 - Rename ArticleService to WriterService. Add WriterService.CreateArticleWithImages  
+v0.6.0 - HugoService.New  
+V0.5.0 - WriterService.CreateArticleWithImages.Generating & ReadyWithImages.    
+V0.4.1 - KeywordService.CreateKeywords by LLM (Cohere/Ollama)
+V0.4.0 - KeywordService.Bukvarix(string $topic). Get tags/keywords list by short description. Save to DB.  
+V0.3.4 - OllamaService, [based on](https://hupe1980.github.io/golc/docs/llms_and_prompts/models/llms/ollama/)  
+V0.3.3 - BukvarixService - https://www.bukvarix.com/api.html
 
 ### Maybe, later
 SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
 CheckNotAI
 
 ## Changelog
+V0.3.2 - [golc](https://github.com/hupe1980/golc) for Cohere. Rename ArticleService to WriterService.  
 V0.3.1 - Add Path field to entity.Image. Add FusionbrainService.GenerateSlug & DeleteImageFromFileSystem. Update project dependencies
 v0.3.0 - FusionbrainService.SaveImageToFileSystem
 v0.2.5 - mock TasksService.Flow, refactoring, update Readme 
 v0.2.4 - FusionbrainService.GetImages & Image.Base64 (save to DB)   
 v0.2.3 - FusionbrainService.CreateTask & Task Entity  
 v0.2.2 - FusionbrainService.CreateTaskString, Update dependencies  
-v0.2.1 - KeywordService  
+v0.2.1 - KeywordService - mock. 
 v0.2.0 - ArticleService - Status New. GORM with models - Article & Image. Add generate.go instead of migrate.go  
 v0.1.2 - LocalAIService - LinGoose.  
 v0.1.1 - Cohere Service - LinGoose. Huggingface Service - hupe1980/go-huggingface  

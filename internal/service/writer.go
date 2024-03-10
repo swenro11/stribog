@@ -24,19 +24,19 @@ const (
 	//StatusGenerateTags        = "GenerateTags"
 )
 
-type ArticleService struct {
+type WriterService struct {
 	cfg *config.Config
 	log *log.Logger
 }
 
-func NewArticleService(cfg *config.Config, l *log.Logger) *ArticleService {
-	return &ArticleService{
+func NewWriterService(cfg *config.Config, l *log.Logger) *WriterService {
+	return &WriterService{
 		cfg: cfg,
 		log: l,
 	}
 }
 
-func (service *ArticleService) CreateArticle(title string) error {
+func (service *WriterService) CreateArticle(title string) error {
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
 	if err != nil {
 		service.log.Fatal("gorm.Open error: %s", err)
@@ -47,7 +47,8 @@ func (service *ArticleService) CreateArticle(title string) error {
 	return nil
 }
 
-func (service *ArticleService) CreateArticleWithImages(keyword string) error {
+func (service *WriterService) CreateArticleWithImages(keyword string) error {
+	// TODO: generate Seo title from keyword
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
 	if err != nil {
 		service.log.Fatal("gorm.Open error: %s", err)
@@ -55,15 +56,15 @@ func (service *ArticleService) CreateArticleWithImages(keyword string) error {
 
 	db.Create(&entity.Article{Title: keyword, Status: StatusNew})
 
-	//create []Image with generaten promts & StatusNew
+	//create []Image with generation promts & StatusNew
 
 	return nil
 }
 
 /*
-ArticleService. Hugo
-ArticleService. Images
-ArticleService. CheckNotAI - https://www.zerogpt.com/ and https://gptzero.me/ (https://github.com/BurhanUlTayyab/GPTZero)
-ArticleService. CheckUnique - based on https://plagiarismcheck.org/for-developers/#single
-ArticleService. SeoOptimization
+WriterService. Hugo
+WriterService. Images
+WriterService. CheckNotAI - https://www.zerogpt.com/ and https://gptzero.me/ (https://github.com/BurhanUlTayyab/GPTZero)
+WriterService. CheckUnique - based on https://plagiarismcheck.org/for-developers/#single
+WriterService. SeoOptimization
 */

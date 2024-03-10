@@ -60,6 +60,22 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) { //, pg *po
 	service.log.Info("Start EveryTenMinuteTask")
 
 	/*
+				//Use VPN
+				cohereService := NewCohereService(
+					cfg,
+					service.log,
+				)
+
+				result, errGeneratePrompt := cohereService.GeneratePrompt("Create seo optimized article about stoicism")
+				if errGeneratePrompt != nil {
+					service.log.Fatal(errGeneratePrompt)
+				}
+				service.log.Info(*result)
+
+		 		Title: Embracing Resilience and Virtue: Unlocking the Secrets of Stoic Philosophy\n\nIntroduction:\nAre you feeling overwhelmed by the uncertainties of life? Discover the timeless wisdom of Stoic philosophy and unlock the secrets to embracing adversity, cultivating resilience, and living a life of virtue. Stoicism holds the key to navigating the challenges of the modern world with clarity, resilience, and self-improvement. Get ready to embark on a transformative journey through the pillars of Stoic philosophy.\n\nPhilosophers of the Stoic Tradition:\nFrom the early days of Zeno of Citium to the influence of Roman Stoics like Seneca and Marcus Aurelius, this philosophy has stood the test of time. Let's delve into their teachings and explore how they can impact our modern lives.\n\n1. Embrace Adversity:\nStoics reject the belief that external events or emotions solely determine one's happiness. Instead, they emphasize the power of our perception and response to adversity. By adopting a rational and pragmatic perspective, individuals can develop resilience in the face of difficulties. \n\n2. Focus on Self-Improvement:\nStoicism emphasizes self-improvement and accountability. Stoics believe that individuals have control over their thoughts, actions, and reactions in any given situation. By embracing self-discipline and practicing introspection, individuals can cultivate personal growth and become better versions of themselves. \n\n3. Rationality as a Guide:\nStoics highly value rationality as a guiding force in life. They encourage individuals to assess things and events in a logical, unbiased manner, rather than letting emotions dictate their actions. By fostering rational thinking, individuals can make better decisions, overcome impulsive behavior, and find peace in clarity. \n\n4. Virtue and Ethics:\nStoic philosophy intertwines with virtue ethics, emphasizing the development of positive character traits. Stoics seek to live in harmony with universal principles and consistently act with courage, wisdom, justice, and moderation. By doing so, they strengthen their moral character and contribute to the common good. \n\n5. Finding Peace in Simplicity:\nStoicism promotes finding tranquility in simplicity. By detaching oneself from material possessions and transient emotions, individuals can discover inner peace and resilience. Simplicity empowers individuals to find contentment and embrace the inherent challenges of the human condition. \n\nApplication in the Modern World:\nLet's explore how we can apply these ancient teachings in our modern lives. Stoicism offers valuable guidance for navigating relationships, career challenges, and the constant pressures of the digital world. It can help us maintain a sense of perspective, make informed decisions, and cultivate emotional well-being, despite the chaos of the world. \n\nConclusion:\nStoic philosophy invites us to challenge our perceptions, cultivate resilience, and embrace a life of virtue and purpose. By applying these timeless principles, we can strengthen our resolve, make informed decisions, and find tranquility in our increasingly complex world. Are you ready to unlock the secrets of stoicism and embark on a journey of self-discovery and resilience?
+	*/
+
+	/*
 		fusionbrainService := NewFusionbrainService(
 			cfg,
 			service.log,
@@ -119,12 +135,12 @@ func (service *TasksService) Flow(cfg *config.Config) {
 		cfg,
 		service.log,
 	)
-	errCreateKeyword := keywordService.CreateKeyword("Test")
+	errCreateKeyword := keywordService.CreateKeywords("Test")
 	if errCreateKeyword != nil {
 		service.log.Fatal(errCreateKeyword.Error())
 	}
 
-	articleService := NewArticleService(
+	WriterService := NewWriterService(
 		cfg,
 		service.log,
 	)
@@ -143,7 +159,7 @@ func (service *TasksService) Flow(cfg *config.Config) {
 	var keywords []entity.Keyword
 	db.Where(entity.Keyword{Status: StatusApprove}).Find(&keywords)
 	for _, keyword := range keywords {
-		errCreateArticle := articleService.CreateArticleWithImages(keyword.Title)
+		errCreateArticle := WriterService.CreateArticleWithImages(keyword.Title)
 		if errCreateArticle != nil {
 			service.log.Fatal(errCreateArticle.Error())
 		}
@@ -177,16 +193,8 @@ func (service *TasksService) Flow(cfg *config.Config) {
 
 	}
 	/*
-		cohereService := NewCohereService(
-			cfg,
-			service.log,
-		)
 
-		result, errTextGeneration := cohereService.TextGeneration("What is the NATO purpose?")
-		if errTextGeneration != nil {
-			service.log.Fatal(errTextGeneration)
-		}
-	*/
+	 */
 
 	/*
 		huggingfaceService := NewHuggingfaceService(
