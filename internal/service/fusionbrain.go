@@ -173,7 +173,7 @@ func (service *FusionbrainService) GetModels() (*ResponseModels, error) {
 }
 
 // TODO: quantity don't work. I send 5 -> get 1 image.
-func (service *FusionbrainService) CreateTask(promt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string, enableLog bool) (*ResponseRun, error) {
+func (service *FusionbrainService) CreateTask(prompt string, quantity uint, width uint, height uint, style string, negativePromptUnclip string, enableLog bool) (*ResponseRun, error) {
 	client := http.Client{Timeout: time.Duration(3) * time.Second}
 
 	var requestData = RequestRunParams{
@@ -185,7 +185,7 @@ func (service *FusionbrainService) CreateTask(promt string, quantity uint, width
 		NegativePromptUnclip: negativePromptUnclip,
 		GenerateParams: struct {
 			Query string "json:\"query\""
-		}{promt},
+		}{prompt},
 	}
 
 	payload := &bytes.Buffer{}
@@ -257,7 +257,7 @@ func (service *FusionbrainService) CreateTask(promt string, quantity uint, width
 			service.log.Fatal("gorm.Open error: %s", err)
 		}
 
-		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Promt: &promt})
+		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Prompt: &prompt})
 	}
 
 	return target, nil
@@ -275,7 +275,7 @@ func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width 
 		NegativePromptUnclip: negativePromptUnclip,
 		GenerateParams: struct {
 			Query string "json:\"query\""
-		}{*image.Promt}, //!
+		}{*image.Prompt}, //!
 	}
 
 	payload := &bytes.Buffer{}
@@ -347,7 +347,7 @@ func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width 
 			service.log.Fatal("gorm.Open error: %s", err)
 		}
 
-		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Promt: image.Promt})
+		db.Create(&entity.Task{Uuid: target.Uuid, Status: target.Status, Prompt: image.Prompt})
 	}
 
 	return target, nil
@@ -405,7 +405,7 @@ func (service *FusionbrainService) GetImages(task *entity.Task, enableLog bool) 
 		}
 
 		for _, image := range target.Images {
-			db.Create(&entity.Image{Base64: &image, ArticleID: 1, Promt: task.Promt})
+			db.Create(&entity.Image{Base64: &image, ArticleID: 1, Prompt: task.Prompt})
 		}
 	}
 
@@ -458,7 +458,7 @@ func (service *FusionbrainService) GenerateSlug(img entity.Image) error {
 	//TODO: check unique for slug
 
 	//slug.MakeLang("Diese & Dass", "de")
-	str := *img.Promt
+	str := *img.Prompt
 	resultSlug := slug.Make(str[0:25]) + service.RandStringBytes(3)
 
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})

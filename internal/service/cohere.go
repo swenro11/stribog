@@ -24,11 +24,11 @@ func NewCohereService(cfg *config.Config, l *log.Logger) *CohereService {
 	}
 }
 
-func (service *CohereService) Completion(promt string) (string, error) {
+func (service *CohereService) Completion(prompt string) (string, error) {
 
 	llm := cohere.NewCompletion().WithAPIKey(service.cfg.AI.CohereToken).WithMaxTokens(100).WithTemperature(0.1).WithVerbose(true)
 
-	result, errCompletion := llm.Completion(context.Background(), promt)
+	result, errCompletion := llm.Completion(context.Background(), prompt)
 	if errCompletion != nil {
 		return result, fmt.Errorf("CohereService - llm.Completion: " + errCompletion.Error())
 	}
@@ -37,7 +37,7 @@ func (service *CohereService) Completion(promt string) (string, error) {
 }
 
 // based on https://hupe1980.github.io/golc/docs/llms_and_prompts/models/chatmodels/cohere/
-func (service *CohereService) GeneratePrompt(promt string) (*string, error) {
+func (service *CohereService) GeneratePrompt(inputPrompt string) (*string, error) {
 	cohere, errNewCohere := chatmodel.NewCohere(service.cfg.AI.CohereToken, func(o *chatmodel.CohereOptions) {
 		o.Temperature = 0.7 // optional
 	})
@@ -45,7 +45,7 @@ func (service *CohereService) GeneratePrompt(promt string) (*string, error) {
 		return nil, fmt.Errorf("CohereService - chatmodel.NewCohere: " + errNewCohere.Error())
 	}
 
-	res, errGeneratePrompt := model.GeneratePrompt(context.Background(), cohere, prompt.StringPromptValue(promt))
+	res, errGeneratePrompt := model.GeneratePrompt(context.Background(), cohere, prompt.StringPromptValue(inputPrompt))
 	if errGeneratePrompt != nil {
 		return nil, fmt.Errorf("CohereService - model.GeneratePrompt: " + errGeneratePrompt.Error())
 	}

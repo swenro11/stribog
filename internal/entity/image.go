@@ -8,7 +8,7 @@ type Image struct {
 	Sort         *uint
 	Status       string `gorm:"default:New"`
 	RewriteNotes *string
-	Promt        *string
+	Prompt       *string
 	Link         *string
 	Path         *string
 	Base64       *string

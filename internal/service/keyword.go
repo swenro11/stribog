@@ -13,7 +13,7 @@ import (
 
 const (
 	//SystemPrompt = "" ? i need that? from https://community.openai.com/t/getting-response-data-as-a-fixed-consistent-json-response/28471/22?page=2
-	GenerateKeywordsPromt = "Generate a list of at least 10 keywords related to " //[topic]
+	GenerateKeywordsPrompt = "Generate a list of at least 10 keywords related to " //[topic]
 )
 
 type KeywordService struct {
@@ -34,10 +34,10 @@ func (service *KeywordService) CreateKeywords(topic string) error {
 		service.log,
 	)
 
-	promt := "Generate a list of at least 10 keywords related to " + topic
-	promt += ".Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation."
-	promt += "['keyword one', 'keyword two', 'etc.']"
-	result, errGeneratePrompt := cohereService.GeneratePrompt(promt)
+	prompt := "Generate a list of at least 10 keywords related to " + topic
+	prompt += ".Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation."
+	prompt += "['keyword one', 'keyword two', 'etc.']"
+	result, errGeneratePrompt := cohereService.GeneratePrompt(prompt)
 	if errGeneratePrompt != nil {
 		return fmt.Errorf("KeywordService.CreateKeywords - cohereService.GeneratePrompt: ", errGeneratePrompt.Error())
 	}

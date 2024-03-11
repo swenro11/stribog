@@ -36,6 +36,8 @@ require (
 
 require (
 	cloud.google.com/go/ai v0.3.0 // indirect
+	cloud.google.com/go/aiplatform v1.58.0 // indirect
+	cloud.google.com/go/longrunning v0.5.4 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/Eun/go-convert v0.0.0-20200421145326-bef6c56666ee // indirect
 	github.com/Eun/go-doppelgangerreader v0.0.0-20190911075941-30f1527f16b2 // indirect
@@ -49,6 +51,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.5.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sagemakerruntime v1.25.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect

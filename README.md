@@ -36,11 +36,13 @@ Add to project - go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5
 [GORM](https://gorm.io/), top [from list](https://github.com/d-tsuji/awesome-go-orms) 
 
 ## AI/LLM
-[Go framework for building awesome LLM apps](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)  
+Go libraries for LLM  
+[Lingoose](https://lingoose.io/), [Github](https://github.com/henomis/lingoose)  
+[golc, Github](https://github.com/hupe1980/golc)  
 
 ### Online AI
 - Huggingface, [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard). **Free account allows you to use models < 10GB.**  
-- [Cohere](https://cohere.com/) with LinGoose. 
+- [Cohere](https://cohere.com/) 
 
 ### LocalAI
 Start docker container with default model.  
@@ -60,14 +62,14 @@ v0.6.0 - HugoService.New
 V0.5.0 - WriterService.CreateArticleWithImages.Generating & ReadyWithImages.    
 V0.4.1 - KeywordService.CreateKeywords by LLM (Cohere/Ollama)
 V0.4.0 - KeywordService.Bukvarix(string $topic). Get tags/keywords list by short description. Save to DB.  
-V0.3.4 - OllamaService, [based on](https://hupe1980.github.io/golc/docs/llms_and_prompts/models/llms/ollama/)  
-V0.3.3 - BukvarixService - https://www.bukvarix.com/api.html
+V0.3.4 - BukvarixService - https://www.bukvarix.com/api.html
 
 ### Maybe, later
 SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
 CheckNotAI
 
 ## Changelog
+V0.3.3 - OllamaService
 V0.3.2 - [golc](https://github.com/hupe1980/golc) for Cohere. Rename ArticleService to WriterService.  
 V0.3.1 - Add Path field to entity.Image. Add FusionbrainService.GenerateSlug & DeleteImageFromFileSystem. Update project dependencies
 v0.3.0 - FusionbrainService.SaveImageToFileSystem

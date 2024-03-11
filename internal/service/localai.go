@@ -39,7 +39,7 @@ func NewLocalAIService(cfg *config.Config, l *log.Logger) *LocalAIService {
 }
 
 // based on https://github.com/henomis/lingoose/blob/main/examples/llm/openai/localai/main.go
-func (service *LocalAIService) TextGenerationGpt3dot5turbo(promt string) (string, error) {
+func (service *LocalAIService) TextGenerationGpt3dot5turbo(inputPrompt string) (string, error) {
 
 	customConfig := goopenai.DefaultConfig("")
 	customConfig.BaseURL = service.cfg.AI.LocalAIURL
@@ -49,7 +49,7 @@ func (service *LocalAIService) TextGenerationGpt3dot5turbo(promt string) (string
 	chat := chat.New(
 		chat.PromptMessage{
 			Type:   chat.MessageTypeUser,
-			Prompt: prompt.New(promt),
+			Prompt: prompt.New(inputPrompt),
 		},
 	)
 

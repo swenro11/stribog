@@ -56,7 +56,7 @@ func (service *WriterService) CreateArticleWithImages(keyword string) error {
 
 	db.Create(&entity.Article{Title: keyword, Status: StatusNew})
 
-	//create []Image with generation promts & StatusNew
+	//create []Image with generation prompts & StatusNew
 
 	return nil
 }

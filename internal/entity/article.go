@@ -8,7 +8,7 @@ type Article struct {
 	Body             *string
 	Status           string
 	RewriteNotes     *string
-	Promt            *string
+	Prompt           *string
 	Images           []Image
 	Keyword          []Keyword `gorm:"many2many:article_keywords;"`
 }

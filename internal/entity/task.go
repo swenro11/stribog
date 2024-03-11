@@ -5,5 +5,5 @@ type Task struct {
 	Uuid             string
 	Status           string
 	ErrorDescription *string
-	Promt            *string
+	Prompt           *string
 }

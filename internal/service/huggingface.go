@@ -67,11 +67,11 @@ func (service *HuggingfaceService) CheckGetenv(enableLog bool) string {
 	return huggingfaceToken
 }
 
-func (service *HuggingfaceService) TextGenerationLingoose(model string, promt string) (string, error) {
+func (service *HuggingfaceService) TextGenerationLingoose(model string, prompt string) (string, error) {
 
 	llm := huggingface.New(model, 0.1, false).WithMode(huggingface.ModeTextGeneration)
 
-	result, errCompletion := llm.Completion(context.Background(), promt)
+	result, errCompletion := llm.Completion(context.Background(), prompt)
 	if errCompletion != nil {
 		return result, fmt.Errorf("HuggingfaceService - llm.Completion: " + errCompletion.Error())
 	}
@@ -79,21 +79,21 @@ func (service *HuggingfaceService) TextGenerationLingoose(model string, promt st
 	return result, nil
 }
 
-func (service *HuggingfaceService) FusionNetTextGenLingoose(promt string) (string, error) {
+func (service *HuggingfaceService) FusionNetTextGenLingoose(prompt string) (string, error) {
 	huggingfaceToken := service.CheckGetenv(false)
 	if len(huggingfaceToken) > 0 {
-		return service.TextGenerationLingoose(_HuggingfaceModel7Bx2FusionNet, promt)
+		return service.TextGenerationLingoose(_HuggingfaceModel7Bx2FusionNet, prompt)
 	} else {
 		return "", fmt.Errorf("HuggingfaceService.FusionNetTextGenLingoose - Not found HuggingfaceToken")
 	}
 }
 
-func (service *HuggingfaceService) TextGenerationHupe1980(model string, promt string) (string, error) {
+func (service *HuggingfaceService) TextGenerationHupe1980(model string, prompt string) (string, error) {
 
 	ic := huggingfaceHupe1980.NewInferenceClient(service.cfg.AI.HuggingfaceToken)
 
 	result, errTextGeneration := ic.TextGeneration(context.Background(), &huggingfaceHupe1980.TextGenerationRequest{
-		Inputs: promt,
+		Inputs: prompt,
 		Model:  model,
 	})
 	if errTextGeneration != nil {
@@ -103,12 +103,12 @@ func (service *HuggingfaceService) TextGenerationHupe1980(model string, promt st
 	return result[0].GeneratedText, nil
 }
 
-func (service *HuggingfaceService) FusionNetTextGenHupe1980(promt string) (string, error) {
+func (service *HuggingfaceService) FusionNetTextGenHupe1980(prompt string) (string, error) {
 
-	return service.TextGenerationHupe1980(_HuggingfaceModel7Bx2FusionNet, promt)
+	return service.TextGenerationHupe1980(_HuggingfaceModel7Bx2FusionNet, prompt)
 }
 
-func (service *HuggingfaceService) HermesTextGenHupe1980(promt string) (string, error) {
+func (service *HuggingfaceService) HermesTextGenHupe1980(prompt string) (string, error) {
 
 	/*
 		_HuggingfaceMode3blMicrosoftPhi2 - error
@@ -116,5 +116,5 @@ func (service *HuggingfaceService) HermesTextGenHupe1980(promt string) (string, 
 		You can inspect the repository content at https://hf.co/microsoft/phi-2.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.
 	*/
 
-	return service.TextGenerationHupe1980(_HuggingfaceModel2x34bHermes2, promt)
+	return service.TextGenerationHupe1980(_HuggingfaceModel2x34bHermes2, prompt)
 }
