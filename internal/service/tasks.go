@@ -59,6 +59,21 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) {
 	service.log.Info("Start EveryTenMinuteTask")
 
 	/*
+		bukvarixService := NewBukvarixService(
+			cfg,
+			service.log,
+		)
+
+		result, errKeywords := bukvarixService.Keywords("Stoic Philosophy")
+		if errKeywords != nil {
+			service.log.Fatal(errKeywords)
+		}
+		for _, element := range result {
+			service.log.Info(element)
+		}
+	*/
+
+	/*
 		ollamaService := NewOllamaService(
 			cfg,
 			service.log,

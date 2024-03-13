@@ -62,13 +62,13 @@ v0.6.0 - HugoService.New
 V0.5.0 - WriterService.CreateArticleWithImages.Generating & ReadyWithImages.    
 V0.4.1 - KeywordService.CreateKeywords by LLM (Cohere/Ollama)
 V0.4.0 - KeywordService.Bukvarix(string $topic). Get tags/keywords list by short description. Save to DB.  
-V0.3.4 - BukvarixService - https://www.bukvarix.com/api.html
 
 ### Maybe, later
 SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
 CheckNotAI
 
 ## Changelog
+V0.3.4 - BukvarixService  
 V0.3.3 - OllamaService
 V0.3.2 - [golc](https://github.com/hupe1980/golc) for Cohere. Rename ArticleService to WriterService.  
 V0.3.1 - Add Path field to entity.Image. Add FusionbrainService.GenerateSlug & DeleteImageFromFileSystem. Update project dependencies

@@ -65,6 +65,7 @@ type (
 		GinMode                   string `env-required:"true" yaml:"gin_mode" env:"GIN_MODE"`
 		TgBotApi                  string `env-required:"false" yaml:"tg_bot_api" env:"TG_BOT_API"`
 		TgChatId                  string `env-required:"false" yaml:"tg_chat_id" env:"TG_CHAT_ID"`
+		BukvarixApiKey            string `env-required:"false" yaml:"bukvarix_api_key" env:"BUKVARIX_API_KEY"`
 	}
 
 	AI struct {

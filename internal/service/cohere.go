@@ -24,16 +24,16 @@ func NewCohereService(cfg *config.Config, l *log.Logger) *CohereService {
 	}
 }
 
-func (service *CohereService) Completion(prompt string) (string, error) {
+func (service *CohereService) Completion(prompt string) (*string, error) {
 
 	llm := cohere.NewCompletion().WithAPIKey(service.cfg.AI.CohereToken).WithMaxTokens(100).WithTemperature(0.1).WithVerbose(true)
 
 	result, errCompletion := llm.Completion(context.Background(), prompt)
 	if errCompletion != nil {
-		return result, fmt.Errorf("CohereService - llm.Completion: " + errCompletion.Error())
+		return nil, fmt.Errorf("CohereService - llm.Completion: " + errCompletion.Error())
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // based on https://hupe1980.github.io/golc/docs/llms_and_prompts/models/chatmodels/cohere/

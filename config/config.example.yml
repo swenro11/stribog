@@ -33,6 +33,7 @@ param:
   gin_mode: debug
   tg_bot_api: "5856567965ZZZZZZZZZZZZZZZZZZZZzjnU0EjI"
   tg_chat_id: "-101111111111111111"
+  bukvarix_api_key: "free"
 
 ai:
   huggingface_token: "hf_5856567965ZZZZZZZZZZZZZZZZZZZZzjnU0EjI"
