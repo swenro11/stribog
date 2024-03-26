@@ -82,10 +82,13 @@ func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
 	// all configuration
-	//../../config/config.yml
+
 	err := cleanenv.ReadConfig("./config/config.yml", cfg) //./config/config.yml 4 migrate
 	if err != nil {
-		return nil, fmt.Errorf("yml config error: %w", err)
+		err := cleanenv.ReadConfig("../../config/config.yml", cfg)
+		if err != nil {
+			return nil, fmt.Errorf("yml config error: %w", err)
+		}
 	}
 
 	/* doesn't read from env in project root*/

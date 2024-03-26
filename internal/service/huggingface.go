@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	_HuggingfaceTokenParam = "HUGGING_FACE_HUB_TOKEN"
+	HuggingfaceTokenParam = "HUGGING_FACE_HUB_TOKEN"
 	//https://huggingface.co/{model_name}
-	_HuggingfaceModelgpt2 = "gpt2"
+	//HuggingfaceModelgpt2 = "gpt2"
 
 	/* microsoft/phi-2
 	The repository for microsoft/phi-2 contains custom code which must be executed to correctly load the model.
@@ -25,16 +25,16 @@ const (
 		The model TomGrc/FusionNet_7Bx2_MoE_14B is too large to be loaded automatically (25GB > 10GB).
 		Please use Spaces (https://huggingface.co/spaces) or Inference Endpoints (https://huggingface.co/inference-endpoints)."}
 	*/
-	_HuggingfaceModel7Bx2FusionNet = "TomGrc/FusionNet_7Bx2_MoE_14B"
+	HuggingfaceModel7Bx2FusionNet = "TomGrc/FusionNet_7Bx2_MoE_14B"
 	/*
 		The model Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B is too large to be loaded automatically (121GB > 10GB).
 		Please use Spaces (https://huggingface.co/spaces) or Inference Endpoints (https://huggingface.co/inference-endpoints).
 
 		For others model - same error about "is too large to be loaded automatically"
 	*/
-	_HuggingfaceModel2x34bHermes2 = "Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B"
-	_HuggingfaceModel67bDeepseek  = "deepseek-ai/deepseek-llm-67b-base"
-	_HuggingfaceModel70bCOKAL     = "DopeorNope/COKAL-v1-70B"
+	HuggingfaceModel2x34bHermes2 = "Weyaxi/Nous-Hermes-2-SUS-Chat-2x34B"
+	HuggingfaceModel67bDeepseek  = "deepseek-ai/deepseek-llm-67b-base"
+	HuggingfaceModel70bCOKAL     = "DopeorNope/COKAL-v1-70B"
 )
 
 type HuggingfaceService struct {
@@ -50,7 +50,7 @@ func NewHuggingfaceService(cfg *config.Config, l *log.Logger) *HuggingfaceServic
 }
 
 func (service *HuggingfaceService) CheckGetenv(enableLog bool) string {
-	huggingfaceToken := os.Getenv(_HuggingfaceTokenParam)
+	huggingfaceToken := os.Getenv(HuggingfaceTokenParam)
 	if enableLog {
 		service.log.Info("HuggingfaceService - checkGetenv -  os.Getenv = " + huggingfaceToken)
 	}
@@ -58,8 +58,8 @@ func (service *HuggingfaceService) CheckGetenv(enableLog bool) string {
 		return huggingfaceToken
 	}
 
-	os.Setenv(_HuggingfaceTokenParam, service.cfg.AI.HuggingfaceToken)
-	huggingfaceToken = os.Getenv(_HuggingfaceTokenParam)
+	os.Setenv(HuggingfaceTokenParam, service.cfg.AI.HuggingfaceToken)
+	huggingfaceToken = os.Getenv(HuggingfaceTokenParam)
 	if enableLog {
 		service.log.Info("HuggingfaceService - checkGetenv -  second os.Getenv = " + huggingfaceToken)
 	}
@@ -82,7 +82,7 @@ func (service *HuggingfaceService) TextGenerationLingoose(model string, prompt s
 func (service *HuggingfaceService) FusionNetTextGenLingoose(prompt string) (string, error) {
 	huggingfaceToken := service.CheckGetenv(false)
 	if len(huggingfaceToken) > 0 {
-		return service.TextGenerationLingoose(_HuggingfaceModel7Bx2FusionNet, prompt)
+		return service.TextGenerationLingoose(HuggingfaceModel7Bx2FusionNet, prompt)
 	} else {
 		return "", fmt.Errorf("HuggingfaceService.FusionNetTextGenLingoose - Not found HuggingfaceToken")
 	}
@@ -104,8 +104,7 @@ func (service *HuggingfaceService) TextGenerationHupe1980(model string, prompt s
 }
 
 func (service *HuggingfaceService) FusionNetTextGenHupe1980(prompt string) (string, error) {
-
-	return service.TextGenerationHupe1980(_HuggingfaceModel7Bx2FusionNet, prompt)
+	return service.TextGenerationHupe1980(HuggingfaceModel7Bx2FusionNet, prompt)
 }
 
 func (service *HuggingfaceService) HermesTextGenHupe1980(prompt string) (string, error) {
@@ -116,5 +115,5 @@ func (service *HuggingfaceService) HermesTextGenHupe1980(prompt string) (string,
 		You can inspect the repository content at https://hf.co/microsoft/phi-2.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.
 	*/
 
-	return service.TextGenerationHupe1980(_HuggingfaceModel2x34bHermes2, prompt)
+	return service.TextGenerationHupe1980(HuggingfaceModel2x34bHermes2, prompt)
 }

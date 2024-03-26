@@ -14,16 +14,16 @@ import (
 )
 
 const (
-	/*
-		{"object":"list","data":[
-			{"id":"gpt-3.5-turbo","object":"model"},
-			{"id":"gpt4all-j","object":"model"},
-			{"id":"gpt4all-snoozy-13b","object":"model"},
-			{"id":"hermes-llama2-13b","object":"model"},
-			{"id":"mistral-7b-openorca.Q4_0.gguf","object":"model"}
-		]}
-	*/
-	_LocalAIgpt3dot5turbo = "gpt-3.5-turbo"
+/*
+	{"object":"list","data":[
+		{"id":"gpt-3.5-turbo","object":"model"},
+		{"id":"gpt4all-j","object":"model"},
+		{"id":"gpt4all-snoozy-13b","object":"model"},
+		{"id":"hermes-llama2-13b","object":"model"},
+		{"id":"mistral-7b-openorca.Q4_0.gguf","object":"model"}
+	]}
+*/
+//LocalAIgpt3dot5turbo = "gpt-3.5-turbo"
 )
 
 type LocalAIService struct {

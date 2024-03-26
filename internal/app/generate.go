@@ -18,15 +18,21 @@ func init() {
 		log.Fatalf("gorm.Open error: %s", err)
 	}
 
+	db.AutoMigrate(&entity.Task{})
+	log.Print("AutoMigrate: entity.Task")
+
+	db.AutoMigrate(&entity.Project{})
+	log.Print("AutoMigrate: entity.Project")
+
+	db.AutoMigrate(&entity.Topic{})
+	log.Print("AutoMigrate: entity.Topic")
+
+	db.AutoMigrate(&entity.Keyword{})
+	log.Print("AutoMigrate: entity.Keyword")
+
 	db.AutoMigrate(&entity.Article{})
 	log.Print("AutoMigrate: entity.Article")
 
 	db.AutoMigrate(&entity.Image{})
 	log.Print("AutoMigrate: entity.Image")
-
-	db.AutoMigrate(&entity.Keyword{})
-	log.Print("AutoMigrate: entity.Keyword")
-
-	db.AutoMigrate(&entity.Task{})
-	log.Print("AutoMigrate: entity.Task")
 }

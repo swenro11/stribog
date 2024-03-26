@@ -1,10 +1,11 @@
 package entity
 
 type Keyword struct {
-	ID      uint
-	Title   string
-	Slug    *string
-	Topic   string
-	Status  string    `gorm:"default:New"`
-	Article []Article `gorm:"many2many:article_keywords;"`
+	ID       uint
+	Title    string
+	Slug     *string
+	TopicID  uint
+	Status   string    `gorm:"default:New"`
+	Source   string    `gorm:"default:Unknown"`
+	Articles []Article `gorm:"many2many:article_keywords;"`
 }

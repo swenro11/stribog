@@ -197,32 +197,32 @@ func (service *FusionbrainService) CreateTask(prompt string, quantity uint, widt
 
 	paramsWriter, err := writer.CreatePart(paramsPart)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: %s", err)
 	}
 
 	paramsPayloadBytes, err := json.Marshal(&requestData)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: %s", err)
 	}
 
 	_, err = paramsWriter.Write(paramsPayloadBytes)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: %s", err)
 	}
 
 	err = writer.WriteField("model_id", Kandinsky3ModelId)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: %s", err)
 	}
 
 	err = writer.Close()
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: %s", err)
 	}
 
 	request, err := http.NewRequest(http.MethodPost, BaseURL+RunAddURL, payload)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: %s", err)
 	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
@@ -231,24 +231,24 @@ func (service *FusionbrainService) CreateTask(prompt string, quantity uint, widt
 
 	response, err := client.Do(request)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: %s", err)
 	}
 
 	defer response.Body.Close()
 
 	responseBytes, errReadAll := io.ReadAll(response.Body)
 	if errReadAll != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: " + errReadAll.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: %s", errReadAll)
 	}
 
 	if enableLog {
-		service.log.Info("FusionbrainService.CreateTask - string(response) = " + string(responseBytes))
+		service.log.Info("FusionbrainService.CreateTask - string(response): %s", string(responseBytes))
 	}
 
 	var target *ResponseRun
 	errUnmarshal := json.Unmarshal(responseBytes, &target)
 	if errUnmarshal != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: ", errUnmarshal.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: %s", errUnmarshal)
 	}
 
 	if target.Uuid != emptyUuid {
@@ -287,32 +287,32 @@ func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width 
 
 	paramsWriter, err := writer.CreatePart(paramsPart)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.CreatePart: %s", err)
 	}
 
 	paramsPayloadBytes, err := json.Marshal(&requestData)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Marshal: %s", err)
 	}
 
 	_, err = paramsWriter.Write(paramsPayloadBytes)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - paramsWriter.Write: %s", err)
 	}
 
 	err = writer.WriteField("model_id", Kandinsky3ModelId)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.WriteField: %s", err)
 	}
 
 	err = writer.Close()
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - writer.Close: %s", err)
 	}
 
 	request, err := http.NewRequest(http.MethodPost, BaseURL+RunAddURL, payload)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - http.NewRequest: %s", err)
 	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
@@ -321,24 +321,24 @@ func (service *FusionbrainService) CreateTaskForImage(image entity.Image, width 
 
 	response, err := client.Do(request)
 	if err != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: ", err.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - client.Do: %s", err)
 	}
 
 	defer response.Body.Close()
 
 	responseBytes, errReadAll := io.ReadAll(response.Body)
 	if errReadAll != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: " + errReadAll.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - io.ReadAll: %s", errReadAll)
 	}
 
 	if enableLog {
-		service.log.Info("FusionbrainService.CreateTask - string(response) = " + string(responseBytes))
+		service.log.Info("FusionbrainService.CreateTask - string(response): %s", string(responseBytes))
 	}
 
 	var target *ResponseRun
 	errUnmarshal := json.Unmarshal(responseBytes, &target)
 	if errUnmarshal != nil {
-		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: ", errUnmarshal.Error())
+		return nil, fmt.Errorf("FusionbrainService.CreateTask - json.Unmarshal: %s", errUnmarshal)
 	}
 
 	if target.Uuid != emptyUuid {
@@ -380,13 +380,13 @@ func (service *FusionbrainService) GetImages(task *entity.Task, enableLog bool) 
 	}
 
 	if enableLog {
-		service.log.Info("FusionbrainService.GetImages - string(response) = " + string(responseBytes))
+		service.log.Info("FusionbrainService.GetImages - string(response): %s", string(responseBytes))
 	}
 
 	var target *ResponseStatus
 	errUnmarshal := json.Unmarshal(responseBytes, &target)
 	if errUnmarshal != nil {
-		return nil, fmt.Errorf("FusionbrainService.GetImages - json.Unmarshal: ", errUnmarshal.Error())
+		return nil, fmt.Errorf("FusionbrainService.GetImages - json.Unmarshal: %s", errUnmarshal)
 	}
 
 	if target.Uuid != emptyUuid {
@@ -394,7 +394,7 @@ func (service *FusionbrainService) GetImages(task *entity.Task, enableLog bool) 
 		if err != nil {
 			service.log.Fatal("gorm.Open error: %s", err)
 		}
-		service.log.Info("FusionbrainService.GetImages - Updates, Task.Uuid = " + target.Uuid)
+		service.log.Info("FusionbrainService.GetImages - Updates, Task.Uuid: %s", target.Uuid)
 		db.Model(&task).Updates(entity.Task{Status: target.Status, ErrorDescription: &target.ErrorDescription})
 	}
 
@@ -416,23 +416,23 @@ func (service *FusionbrainService) SaveImageToFileSystem(img entity.Image, path 
 	strPointerValue := *img.Base64
 	unbased, err := base64.StdEncoding.DecodeString(strPointerValue)
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - DecodeString: ", err.Error())
+		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - DecodeString: %s", err)
 	}
 	r := bytes.NewReader(unbased)
 	imgDecode, err := jpeg.Decode(r)
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - jpeg.Decode: ", err.Error())
+		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - jpeg.Decode: %s", err)
 	}
 
 	jpgFilename := path + *img.Slug + ".jpg" //
 	file, err := os.OpenFile(jpgFilename, os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - os.OpenFile: ", err.Error())
+		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - os.OpenFile: %s", err)
 	}
 
 	err = png.Encode(file, imgDecode)
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - png.Encode: ", err.Error())
+		return fmt.Errorf("FusionbrainService.SaveImageToFileSystem - png.Encode: %s", err)
 	}
 
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
@@ -463,7 +463,7 @@ func (service *FusionbrainService) GenerateSlug(img entity.Image) error {
 
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.GenerateSlug - gorm.Open: ", err.Error())
+		return fmt.Errorf("FusionbrainService.GenerateSlug - gorm.Open: %s", err)
 	}
 	db.Model(&img).Updates(entity.Image{Slug: &resultSlug})
 
@@ -476,7 +476,7 @@ func (service *FusionbrainService) DeleteImageFromFileSystem(img entity.Image) e
 
 	err := os.Remove(path)
 	if err != nil {
-		return fmt.Errorf("FusionbrainService.DeleteImageFromFileSystem - os.Remove: ", err.Error())
+		return fmt.Errorf("FusionbrainService.DeleteImageFromFileSystem - os.Remove: %s", err)
 	}
 
 	return nil

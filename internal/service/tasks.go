@@ -58,20 +58,24 @@ func (service *TasksService) EveryMinuteTask(cfg *config.Config) {
 func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) {
 	service.log.Info("Start EveryTenMinuteTask")
 
-	/*
-		bukvarixService := NewBukvarixService(
-			cfg,
-			service.log,
-		)
+	db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("gorm.Open error: %s", err)
+	}
 
-		result, errKeywords := bukvarixService.Keywords("Stoic Philosophy")
-		if errKeywords != nil {
-			service.log.Fatal(errKeywords)
+	keywordService := NewKeywordService(
+		cfg,
+		service.log,
+	)
+
+	var topics []entity.Topic
+	db.Where(entity.Image{Status: StatusApproved}).Find(&topics)
+	for _, topic := range topics {
+		errSaveKeyword := keywordService.BukvarixSaveKeywords(topic)
+		if errSaveKeyword != nil {
+			service.log.Fatal(errSaveKeyword.Error())
 		}
-		for _, element := range result {
-			service.log.Info(element)
-		}
-	*/
+	}
 
 	/*
 		ollamaService := NewOllamaService(
@@ -159,68 +163,6 @@ func (service *TasksService) EveryDayTask(cfg *config.Config) {
 
 func (service *TasksService) Flow(cfg *config.Config) {
 
-	keywordService := NewKeywordService(
-		cfg,
-		service.log,
-	)
-	errCreateKeyword := keywordService.CreateKeywords("Test")
-	if errCreateKeyword != nil {
-		service.log.Fatal(errCreateKeyword.Error())
-	}
-
-	WriterService := NewWriterService(
-		cfg,
-		service.log,
-	)
-
-	fusionbrainService := NewFusionbrainService(
-		cfg,
-		service.log,
-	)
-
-	db, err := gorm.Open(postgres.Open(cfg.PG.URL), &gorm.Config{})
-	if err != nil {
-		service.log.Fatal("gorm.Open error: %s", err)
-	}
-
-	//create articles for Approved Keywords
-	var keywords []entity.Keyword
-	db.Where(entity.Keyword{Status: StatusApprove}).Find(&keywords)
-	for _, keyword := range keywords {
-		errCreateArticle := WriterService.CreateArticleWithImages(keyword.Title)
-		if errCreateArticle != nil {
-			service.log.Fatal(errCreateArticle.Error())
-		}
-		//create link between article & keyword
-	}
-
-	//fusionbrain online
-	_, errGetModels := fusionbrainService.GetModels()
-	if errGetModels == nil {
-		//start creating images
-		var images []entity.Image
-		db.Where(entity.Image{Status: StatusNew}).Find(&images)
-		for _, image := range images {
-			_, errCreateTask := fusionbrainService.CreateTaskForImage(image, 1024, 1024, "", "", false)
-			if errCreateTask != nil {
-				service.log.Fatal(errCreateTask)
-			}
-		}
-
-		//get images from fusionbrain
-		var tasks []entity.Task
-		db.Where(entity.Keyword{Status: TaskStatusInitial}).Find(&tasks)
-		for _, task := range tasks {
-			service.log.Info("task.Uuid: %s", task.Uuid)
-			getImagesResult, errGetImages := fusionbrainService.GetImages(&task, false)
-			if errGetImages != nil {
-				service.log.Fatal(errGetImages)
-			}
-			service.log.Info(getImagesResult.Uuid)
-		}
-
-	}
-
 	/*
 		huggingfaceService := NewHuggingfaceService(
 			cfg,
@@ -303,7 +245,7 @@ func (service *TasksService) CheckRedis(cfg *config.Config, ctx context.Context)
 	if err != nil {
 		service.log.Fatal(err)
 	}
-	service.log.Info("key", val)
+	service.log.Info("key: %s", val)
 
 	val2, err := rdb.Get(ctx, "key2").Result()
 	if err == redis.Nil {
@@ -311,7 +253,7 @@ func (service *TasksService) CheckRedis(cfg *config.Config, ctx context.Context)
 	} else if err != nil {
 		service.log.Fatal(err)
 	} else {
-		service.log.Info("key2", val2)
+		service.log.Info("key2 %ss", val2)
 	}
 	// Output: key value
 	// key2 does not exist

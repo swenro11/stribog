@@ -11,12 +11,13 @@ import (
 
 const (
 	StatusNew              string = "New"
-	StatusApprove          string = "Approve"
-	StatusGenerating       string = "Generating"      //StartGegenerateImages && SaveImages
-	StatusReadyWithImages  string = "ReadyWithImages" //SeoOptimization
+	StatusApproved         string = "Approved"
+	StatusApprovedByAI     string = "ApprovedByAI"
+	StatusGenerating       string = "Generating"
+	StatusReadyWithImages  string = "ReadyWithImages"
 	StatusCheckUnique      string = "CheckUnique"
 	StatusCheckNotAI       string = "CheckNotAI"
-	StatusDeployToTestHugo string = "DeployToTestHugo" //MdFormatWithImages
+	StatusDeployToTestHugo string = "DeployToTestHugo"
 	StatusRewrite          string = "Rewrite"
 	StatusDeployToProdHugo string = "DeployToProdHugo"
 	//StatusAddLinks            = "AddLinks"
@@ -47,14 +48,18 @@ func (service *WriterService) CreateArticle(title string) error {
 	return nil
 }
 
-func (service *WriterService) CreateArticleWithImages(keyword string) error {
+func (service *WriterService) CreateArticleWithImages(keyword entity.Keyword) error {
 	// TODO: generate Seo title from keyword
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
 	if err != nil {
 		service.log.Fatal("gorm.Open error: %s", err)
 	}
 
-	db.Create(&entity.Article{Title: keyword, Status: StatusNew})
+	db.Create(&entity.Article{Title: keyword.Title, Status: StatusNew})
+
+	//TODO: create/save link between article & keyword
+	//db.Model(&keyword).Update(entity.Keyword{Articles: new []})
+	//sdb.Save(&User{Name: "jinzhu", Age: 100})
 
 	//create []Image with generation prompts & StatusNew
 
