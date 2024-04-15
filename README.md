@@ -60,14 +60,14 @@ v0.8.0 - CheckUnique.
 v0.7.0 - WriterService.ConvertToMd.  
 v0.6.0 - HugoService.New  
 V0.5.0 - WriterService.CreateArticleWithImages.Generating & ReadyWithImages.
-V0.4.3 - KeywordService.OllamaSaveKeywords    
-V0.4.2 - KeywordService.CohereSaveKeywords
 
 ### Maybe
 SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go  
 CheckNotAI
 
 ## Changelog
+V0.4.3 - KeywordService.OllamaSaveKeywords   
+V0.4.2 - KeywordService.CohereSaveKeywords
 V0.4.1 - FlowService
 V0.4.0 - KeywordService.BukvarixSaveKeywords & refactoring
 V0.3.4 - BukvarixService  

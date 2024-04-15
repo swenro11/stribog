@@ -71,7 +71,7 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) {
 	var topics []entity.Topic
 	db.Where(entity.Image{Status: StatusApproved}).Find(&topics)
 	for _, topic := range topics {
-		errSaveKeyword := keywordService.CohereSaveKeywords(topic)
+		errSaveKeyword := keywordService.OllamaSaveKeywords(topic)
 		if errSaveKeyword != nil {
 			service.log.Fatal(errSaveKeyword.Error())
 		}
