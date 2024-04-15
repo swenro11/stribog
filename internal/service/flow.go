@@ -169,14 +169,16 @@ func (service *FlowService) New() (*string, error) {
 	var topics []entity.Topic
 	db.Where(entity.Image{Status: StatusApproved}).Find(&topics)
 	for _, topic := range topics {
-		errSaveKeyword := keywordService.BukvarixSaveKeywords(topic)
-		if errSaveKeyword != nil {
-			service.log.Fatal(errSaveKeyword.Error())
-		}
+		/*
+			errSaveKeyword := keywordService.BukvarixSaveKeywords(topic)
+			if errSaveKeyword != nil {
+				service.log.Fatal(errSaveKeyword.Error())
+			}
+		*/
 
-		errCreateKeyword := keywordService.CohereCreateKeywords(topic)
-		if errCreateKeyword != nil {
-			service.log.Fatal(errCreateKeyword.Error())
+		errCohereSaveKeywords := keywordService.CohereSaveKeywords(topic)
+		if errCohereSaveKeywords != nil {
+			service.log.Fatal(errCohereSaveKeywords.Error())
 		}
 	}
 
