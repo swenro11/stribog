@@ -10,14 +10,13 @@ import (
 )
 
 const (
-	StatusNew             string = "New"
-	StatusApproved        string = "Approved"
-	StatusApprovedByAI    string = "ApprovedByAI"
-	StatusGenerating      string = "Generating"
-	StatusReadyWithImages string = "ReadyWithImages"
-	StatusCheckUnique     string = "CheckUnique"
-	// https://www.zerogpt.com/ and https://gptzero.me/ (https://github.com/BurhanUlTayyab/GPTZero)
-	StatusCheckNotAI       string = "CheckNotAI"
+	StatusNew              string = "New"
+	StatusApproved         string = "Approved"
+	StatusApprovedByAI     string = "ApprovedByAI"
+	StatusGenerating       string = "Generating"
+	StatusReadyWithImages  string = "ReadyWithImages"
+	StatusCheckUnique      string = "CheckUnique"
+	StatusCheckNotAI       string = "CheckNotAI" // https://www.zerogpt.com/ and https://gptzero.me/ (https://github.com/BurhanUlTayyab/GPTZero)
 	StatusDeployToTestHugo string = "DeployToTestHugo"
 	StatusRewrite          string = "Rewrite"
 	StatusDeployToProdHugo string = "DeployToProdHugo"
@@ -25,6 +24,10 @@ const (
 	//StatusRegenerateImages    = "RegenerateImages"
 	//StatusGenerateTags        = "GenerateTags"
 	//CheckUnique - based on https://plagiarismcheck.org/for-developers/#single
+	MetaDescriptionPrompt       = "Write a meta description of 150-160 characters for a blog post on '%s'"
+	IntroductionParagraphPrompt = "Generate an introduction paragraph for an article about '%s'"
+	SEOoptimizedTitlePrompt     = "Generate a compelling and SEO-optimized blog title for an article about '%s'"
+	ImageAltTagPrompt           = "Curate informative image alt tags for a photo gallery of '%s'"
 )
 
 type WriterService struct {

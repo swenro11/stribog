@@ -88,7 +88,7 @@ func (service *FlowService) ApprovedByAI() (*string, error) {
 */
 func (service *FlowService) Generating() (*string, error) {
 	// Mock
-	// Mb take a part of Approved for fussiabbrain here
+	// Mb take a part of Approved for Fusionbrain here
 
 	return nil, nil
 }
@@ -155,7 +155,6 @@ func (service *FlowService) Approved() (*string, error) {
 - Use current article table as a source for new topics
 */
 func (service *FlowService) New() (*string, error) {
-	// Mock Create New keywords by LLM & other
 	keywordService := NewKeywordService(
 		service.cfg,
 		service.log,
@@ -169,36 +168,16 @@ func (service *FlowService) New() (*string, error) {
 	var topics []entity.Topic
 	db.Where(entity.Image{Status: StatusApproved}).Find(&topics)
 	for _, topic := range topics {
-		/*
-			errSaveKeyword := keywordService.BukvarixSaveKeywords(topic)
-			if errSaveKeyword != nil {
-				service.log.Fatal(errSaveKeyword.Error())
-			}
-		*/
-
 		errCohereSaveKeywords := keywordService.CohereSaveKeywords(topic)
 		if errCohereSaveKeywords != nil {
 			service.log.Fatal(errCohereSaveKeywords.Error())
 		}
-	}
 
-	// TODO: Move to OllamaService
-	// base on https://lingoose.io/reference/embedding/
-	/*
-		https://github.com/henomis/lingoose/blob/main/examples/embeddings/ollama/main.go
-		https://github.com/henomis/lingoose/blob/525cbb06fce6b3c2f280374bc0f7dc905eed9f26/examples/embeddings/ollama/main.go#L7
-		https://github.com/Burakbgmk/go-tbc-bot/blob/77c0a66e1efe1b2dec8fa146558cedfe8d17a302/internal/ai/query.go#L27
-			embeddins, err := ollamaembedder.New().
-				WithEndpoint("http://localhost:11434/api").
-				WithModel("mistral").
-				Embed(
-					context.Background(),
-					[]string{"What is the NATO purpose?"},
-				)
-			if err != nil {
-				panic(err)
-			}
-	*/
+		errSaveKeyword := keywordService.OllamaSaveKeywords(KeywordsPrompt, topic)
+		if errSaveKeyword != nil {
+			service.log.Fatal(errSaveKeyword.Error())
+		}
+	}
 
 	return nil, nil
 }

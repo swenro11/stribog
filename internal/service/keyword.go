@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/swenro11/stribog/config"
@@ -15,10 +14,12 @@ import (
 
 const (
 	//SystemPrompt = "" ? i need that? from https://community.openai.com/t/getting-response-data-as-a-fixed-consistent-json-response/28471/22?page=2
-	GenerateKeywordsPrompt = "Generate a list of at least 10 keywords related to " //[topic]
-	BukvarixSource         = "Bukvarix"
-	CohereSource           = "Cohere"
-	OllamaSource           = "Ollama"
+	KeywordsPrompt          = "Generate a list of at least 10 keywords related to %s"
+	ClusterKeywordsPrompt   = "Generate a cluster of keywords around the primary keyword '%s'"
+	KeywordVariationsPrompt = "Create keyword variations for '%s' with high search volume"
+	BukvarixSource          = "Bukvarix"
+	CohereSource            = "Cohere"
+	OllamaSource            = "Ollama"
 )
 
 type KeywordService struct {
@@ -58,6 +59,46 @@ func (service *KeywordService) BukvarixSaveKeywords(topic entity.Topic) error {
 	return nil
 }
 
+// TODO: test
+func (service *KeywordService) CohereSaveLongtailKeywords(topic entity.Topic) error {
+	cohereService := NewCohereService(
+		service.cfg,
+		service.log,
+	)
+
+	prompt := "Generate a list of long-tail keywords related to '" + topic.Title + "'"
+	prompt += ".Do not include any explanations, only provide a list with keywords, in cvs format with ; separator."
+	result, errGeneratePrompt := cohereService.GeneratePrompt(prompt)
+	if errGeneratePrompt != nil {
+		return fmt.Errorf("KeywordService.CohereSaveLongtailKeywords - cohereService.GeneratePrompt: %s", errGeneratePrompt)
+	}
+
+	service.log.Info("cohereService.GeneratePrompt = " + *result)
+
+	/*
+		service.log.Info("cohereService.GeneratePrompt = " + *result)
+		Certainty; Belief; Consciousness; Existentialism; Freedom; Knowledge; Mind; Morality; Nature of God; Science and Philosophy; Suffering
+	*/
+
+	resultKeywords := strings.Split(*result, ";")
+
+	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
+	if err != nil {
+		service.log.Fatal("KeywordService.CohereSaveLongtailKeywords - gorm.Open: %s", err)
+	}
+
+	for _, element := range resultKeywords {
+		if element != "" {
+			title := strings.Trim(element, " ")
+			db.Create(&entity.Keyword{TopicID: topic.ID, Status: StatusNew, Source: CohereSource, Title: title})
+		}
+	}
+
+	return nil
+}
+
+// TODO: Use for new topic creatinon
+// TODO: Compare with Example prompt: Generate a cluster of keywords around the primary keyword "blockchain technology."
 func (service *KeywordService) CohereSaveKeywords(topic entity.Topic) error {
 	cohereService := NewCohereService(
 		service.cfg,
@@ -93,26 +134,16 @@ func (service *KeywordService) CohereSaveKeywords(topic entity.Topic) error {
 	return nil
 }
 
-func (service *KeywordService) OllamaSaveKeywords(topic entity.Topic) error {
+func (service *KeywordService) OllamaSaveKeywords(prompt string, topic entity.Topic) error {
 	ollamaService := NewOllamaService(
 		service.cfg,
 		service.log,
 	)
 
-	prompt := "Generate a list of at least 10 keywords related to " + topic.Title
-	prompt += ". Do not include any explanations, only provide a list with keywords, every keyword from new row, without numbers."
-	result, errGeneratePrompt := ollamaService.GenerateLingoose(prompt)
-	if errGeneratePrompt != nil {
-		return fmt.Errorf("KeywordService.OllamaSaveKeywords - ollamaService.GenerateLingoose: %s", errGeneratePrompt)
+	resultKeywords, errGenerateByPromptWithParam := ollamaService.GenerateByPromptWithParam(prompt, topic.Title)
+	if errGenerateByPromptWithParam != nil {
+		return fmt.Errorf("KeywordService.OllamaSaveKeywords - ollamaService.GenerateByPromptWithParam: %s", errGenerateByPromptWithParam)
 	}
-
-	/*
-		service.log.Info("ollamaService.GenerateLingoose = " + *result)
-		Thread:\nuser:\n\tType: text\n\tText: Generate a list of at least 10 keywords related to Life Philosophy.Do not include any explanations, only provide a list with keywords, in cvs format with ; separator.\nassistant:\n\tType: text\n\tText: Here are 10 keywords related to Life Philosophy:\n1. Existentialism\n2. Humanism\n3. Nihilism\n4. Hedonism\n5. Stoicism\n6. Epicureanism\n7. Transcendentalism\n8. Pragmatism\n9. Utilitarianism\n10. Egoism\n
-	*/
-
-	assistantAnswer := strings.Split(*result, "assistant:\n\tType: text\n\tText:")
-	resultKeywords := strings.Split(assistantAnswer[1], "\n")
 
 	db, err := gorm.Open(postgres.Open(service.cfg.PG.URL), &gorm.Config{})
 	if err != nil {
@@ -121,11 +152,7 @@ func (service *KeywordService) OllamaSaveKeywords(topic entity.Topic) error {
 
 	for _, element := range resultKeywords {
 		if element != "" {
-			re := regexp.MustCompile(`\d`)
-			element = re.ReplaceAllString(element, "")
-			title := strings.ReplaceAll(element, ". ", "")
-			title = strings.Trim(title, " ")
-			db.Create(&entity.Keyword{TopicID: topic.ID, Status: StatusNew, Source: OllamaSource, Title: title})
+			db.Create(&entity.Keyword{TopicID: topic.ID, Status: StatusNew, Source: OllamaSource, Title: element})
 		}
 	}
 

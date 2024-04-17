@@ -68,10 +68,11 @@ func (service *TasksService) EveryTenMinuteTask(cfg *config.Config) {
 		service.log,
 	)
 
+	// TODO: test with ClusterKeywordsPrompt
 	var topics []entity.Topic
 	db.Where(entity.Image{Status: StatusApproved}).Find(&topics)
 	for _, topic := range topics {
-		errSaveKeyword := keywordService.OllamaSaveKeywords(topic)
+		errSaveKeyword := keywordService.OllamaSaveKeywords(ClusterKeywordsPrompt, topic)
 		if errSaveKeyword != nil {
 			service.log.Fatal(errSaveKeyword.Error())
 		}

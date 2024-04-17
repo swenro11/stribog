@@ -66,6 +66,7 @@ SaveCDN, DeleteCDN based on https://github.com/cloudflare/cloudflare-go
 CheckNotAI
 
 ## Changelog
+V0.4.4 - OllamaService.GenerateByPromptWithParam & Prompts
 V0.4.3 - KeywordService.OllamaSaveKeywords   
 V0.4.2 - KeywordService.CohereSaveKeywords
 V0.4.1 - FlowService

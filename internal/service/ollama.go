@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 
 	lingooseOllama "github.com/henomis/lingoose/llm/ollama"
 	"github.com/henomis/lingoose/thread"
@@ -70,3 +72,41 @@ func (service *OllamaService) GenerateLingoose(prompt string) (*string, error) {
 	strResult := t.String()
 	return &strResult, nil
 }
+
+func (service *OllamaService) GenerateByPromptWithParam(prompt string, param string) ([]string, error) {
+	prompt = fmt.Sprintf(prompt, param)
+	prompt += ". Do not include any explanations, only provide a list, every part of list from new row, without numbers."
+	result, errGeneratePrompt := service.GenerateLingoose(prompt)
+	if errGeneratePrompt != nil {
+		return nil, fmt.Errorf("GenerateByPromptWithParam - GenerateLingoose: %s", errGeneratePrompt)
+	}
+
+	assistantAnswer := strings.Split(*result, "assistant:\n\tType: text\n\tText:")
+	resultStrings := strings.Split(assistantAnswer[1], "\n")
+	re := regexp.MustCompile(`\d`)
+	for i := range resultStrings {
+		fullString := re.ReplaceAllString(resultStrings[i], "")
+		fullString = strings.ReplaceAll(fullString, ". ", "")
+		resultStrings[i] = strings.TrimSpace(fullString)
+	}
+
+	return resultStrings, nil
+}
+
+// create content with embedding
+// base on https://lingoose.io/reference/embedding/
+/*
+	https://github.com/henomis/lingoose/blob/main/examples/embeddings/ollama/main.go
+	https://github.com/henomis/lingoose/blob/525cbb06fce6b3c2f280374bc0f7dc905eed9f26/examples/embeddings/ollama/main.go#L7
+	https://github.com/Burakbgmk/go-tbc-bot/blob/77c0a66e1efe1b2dec8fa146558cedfe8d17a302/internal/ai/query.go#L27
+		embeddins, err := ollamaembedder.New().
+			WithEndpoint("http://localhost:11434/api").
+			WithModel("mistral").
+			Embed(
+				context.Background(),
+				[]string{"What is the NATO purpose?"},
+			)
+		if err != nil {
+			panic(err)
+		}
+*/
